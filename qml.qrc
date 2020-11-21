@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
+        <file>GameBoard.qml</file>
+        <file>Snake.qml</file>
     </qresource>
 </RCC>
