@@ -5,7 +5,6 @@ import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 
 Canvas {
-    focus: true
     id: canvas
     width: 600
     height: 600
@@ -72,7 +71,7 @@ Canvas {
 
         // paint the border
         ctx.fillStyle = '#212121'
-        ctx.roundedRect(0, 0, canvas.width, canvas.height, 30, 30)
+        ctx.roundedRect(0, 0, canvas.width, canvas.height, 20, 20)
         ctx.fill()
 
         // paint lines inside the board
@@ -88,13 +87,13 @@ Canvas {
         //        ctx.stroke()
 
         //         paint the snakes
-        ctx.lineWidth = 8
+        ctx.lineWidth = 15
         for (i = 0; i < canvas.snakeNum; i++) {
             let points = canvas.snakes[i].points
             ctx.strokeStyle = snakes[i].color
             ctx.beginPath()
             //            context.shadowColor = '#2e91ed'
-            //            context.shadowBlur = 3
+            //            context.shadowBlur = 10
             ctx.moveTo(points[0].x, points[0].y)
             for (j = 1; j < points.length; j++) {
                 ctx.lineTo(points[j].x, points[j].y)

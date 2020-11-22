@@ -47,19 +47,27 @@ Window {
             height: 600
             width: 600
 
-            Rectangle {
-                id: boardBorder
-                color: "#212121"
-                anchors.fill: parent
-                radius: 20
-            }
-            RectangularGlow {
-                id: effect
-                anchors.fill: boardBorder
-                glowRadius: 20
-                spread: 0.2
-                color: "#212121"
-                cornerRadius: boardBorder.radius + glowRadius
+            //            Rectangle {
+            //                id: boardBorder
+            //                color: "#212121"
+            //                anchors.fill: parent
+            //                radius: 20
+            //            }
+            //            RectangularGlow {
+            //                id: effect
+            //                anchors.fill: boardBorder
+            //                glowRadius: 20
+            //                spread: 0.2
+            //                color: "#212121"
+            //                cornerRadius: boardBorder.radius + glowRadius
+            //            }
+            Glow {
+                anchors.fill: gameBoard
+                radius: 30
+                samples: 30
+                color: "#1d558c"
+                spread: 0.3
+                source: gameBoard
             }
             GameBoard {
                 id: gameBoard
