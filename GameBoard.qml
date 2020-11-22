@@ -2,6 +2,7 @@
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
+import QtGraphicalEffects 1.0
 
 Canvas {
     focus: true
@@ -15,6 +16,10 @@ Canvas {
 
     // key handlers
     Keys.onPressed: {
+        if (blockKey.running)
+            return
+        else
+            blockKey.start()
         function setDirection(id, direction) {
             switch (snakes[id].direction) {
             case "up":
@@ -61,30 +66,39 @@ Canvas {
 
     onPaint: {
         let ctx = canvas.getContext("2d"), atomSize = canvas.atomSize
-        ctx.clearRect(0, 0, canvas.width, canvas.height)
-        // paint the board
-        ctx.strokeStyle = '#FFFFFF'
-        ctx.lineWidth = '5'
-        ctx.strokeRect(0, 0, canvas.width, canvas.height)
-        ctx.lineWidth = '1'
-        ctx.beginPath()
         var i, j
-        for (i = atomSize; i < canvas.height; i += atomSize) {
-            ctx.moveTo(0, i)
-            ctx.lineTo(canvas.width, i)
-            ctx.moveTo(i, 0)
-            ctx.lineTo(i, canvas.height)
-        }
-        ctx.stroke()
-        // paint the snakes
-        ctx.lineWidth = '10'
+        // cleanup
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+        // paint the border
+        ctx.fillStyle = '#212121'
+        ctx.roundedRect(0, 0, canvas.width, canvas.height, 30, 30)
+        ctx.fill()
+
+        // paint lines inside the board
+        //        ctx.strokeStyle = '#FFFFFF'
+        //        ctx.lineWidth = '1'
+        //        ctx.beginPath()
+        //        for (i = atomSize; i < canvas.height; i += atomSize) {
+        //            ctx.moveTo(0, i)
+        //            ctx.lineTo(canvas.width, i)
+        //            ctx.moveTo(i, 0)
+        //            ctx.lineTo(i, canvas.height)
+        //        }
+        //        ctx.stroke()
+
+        //         paint the snakes
+        ctx.lineWidth = 8
         for (i = 0; i < canvas.snakeNum; i++) {
             let points = canvas.snakes[i].points
-            ctx.stokeStyle = snakes[i].color
+            ctx.strokeStyle = snakes[i].color
             ctx.beginPath()
+            //            context.shadowColor = '#2e91ed'
+            //            context.shadowBlur = 3
             ctx.moveTo(points[0].x, points[0].y)
             for (j = 1; j < points.length; j++) {
                 ctx.lineTo(points[j].x, points[j].y)
+                ctx.moveTo(points[j].x, points[j].y)
             }
             ctx.stroke()
         }
@@ -106,7 +120,7 @@ Canvas {
             let snakeId = "snake" + id
             switch (id) {
             case 0:
-                color = 'white'
+                color = '#2e91ed'
                 points = [{
                               "x": 175,
                               "y": 75
@@ -145,7 +159,7 @@ Canvas {
 
     Timer {
         id: repaintTimer
-        interval: 20
+        interval: 25
         running: false
         repeat: true
         onTriggered: {
@@ -153,5 +167,11 @@ Canvas {
                 snakes[i].move()
             canvas.requestPaint()
         }
+    }
+    Timer {
+        id: blockKey
+        interval: 50
+        running: flase
+        repeat: false
     }
 }
