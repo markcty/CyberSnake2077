@@ -31,7 +31,10 @@ Window {
                 Layout.rightMargin: 0
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 font.pointSize: 15
-                onClicked: gameBoard.startGame()
+                onClicked: {
+                    gameBoard.focus = true
+                    gameBoard.startGame()
+                }
             }
 
             Button {
@@ -44,7 +47,7 @@ Window {
         }
 
         GameBoard {
-            id: gameboard
+            id: gameBoard
         }
     }
 }

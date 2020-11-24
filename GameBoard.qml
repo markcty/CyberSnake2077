@@ -8,7 +8,7 @@ Item {
     id: gameBoard
     width: 800
     height: 800
-    property int atomSize: 30
+    property int atomSize: 25
     property var snake
     property var snakeComponent
 
@@ -30,17 +30,37 @@ Item {
         anchors.verticalCenter: parent.verticalCenter
     }
 
-    Timer {
-        running: true
-        repeat: true
-        interval: 500
-        onTriggered: {
-            snake.move()
+    Keys.onPressed: {
+        switch (event.key) {
+        case Qt.Key_W:
+            if (snake.direction !== "down")
+                snake.direction = "up"
+            break
+        case Qt.Key_A:
+            if (snake.direction !== "right")
+                snake.direction = "left"
+            break
+        case Qt.Key_S:
+            if (snake.direction !== "up")
+                snake.direction = "down"
+            break
+        case Qt.Key_D:
+            if (snake.direction !== "left")
+                snake.direction = "right"
+            break
         }
+        event.accepted = true
+    }
+
+    function startGame() {
+        snake.startMove()
     }
 
     Component.onCompleted: {
         snakeComponent = Qt.createComponent("Snake.qml")
-        snake = snakeComponent.createObject(canvas)
+        snake = snakeComponent.createObject(canvas, {
+                                                "direction": "right",
+                                                "atomSize": atomSize
+                                            })
     }
 }
