@@ -10,7 +10,10 @@ Item {
     property var snakeParts
     property var snakePartComponent
     property string direction
-    property int atomSize: 30
+    property real atomSize: 30
+    property color color
+
+    signal finishMove(var snake)
 
     Component.onCompleted: {
         snakePartComponent = Qt.createComponent("SnakePart.qml")
@@ -19,8 +22,13 @@ Item {
             snakeParts.push(snakePartComponent.createObject(snake, {
                                                                 "x": x,
                                                                 "y": atomSize,
-                                                                "atomSize": atomSize
+                                                                "atomSize": atomSize,
+                                                                "color": snake.color,
+                                                                "partSize": atomSize * 4 / 5
                                                             }))
+        }
+        for (var i = 0; i < 3; i++) {
+            snakeParts[i].partSize = atomSize * (i + 5) / 10
         }
     }
 
@@ -41,18 +49,31 @@ Item {
             dx = atomSize
             break
         }
-
+        let nextX = snakeParts[snakeParts.length - 1].x + dx
+        let nextY = snakeParts[snakeParts.length - 1].y + dy
+        // continue to next step
         snakeParts.push(snakePartComponent.createObject(snake, {
-                                                            "x": snakeParts[snakeParts.length
-                                                                - 1].x + dx,
-                                                            "y": snakeParts[snakeParts.length
-                                                                - 1].y + dy,
-                                                            "atomSize": atomSize
+                                                            "x": nextX,
+                                                            "y": nextY,
+                                                            "atomSize": atomSize,
+                                                            "color": snake.color,
+                                                            "partSize": atomSize * 4 / 5
                                                         }))
+        for (var i = 0; i < 3; i++) {
+            snakeParts[i].partSize = atomSize * (i + 5) / 10
+        }
+        snake.finishMove(snake)
     }
 
     function startMove() {
         moveTimer.start()
+    }
+
+    function getHead() {
+        return {
+            "x": snakeParts[snakeParts.length - 1].x,
+            "y": snakeParts[snakeParts.length - 1].y
+        }
     }
 
     Timer {

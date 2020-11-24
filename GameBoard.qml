@@ -8,7 +8,7 @@ Item {
     id: gameBoard
     width: 800
     height: 800
-    property int atomSize: 25
+    property real atomSize: 30
     property var snake
     property var snakeComponent
 
@@ -31,6 +31,7 @@ Item {
     }
 
     Keys.onPressed: {
+        // to-do: user input stack
         switch (event.key) {
         case Qt.Key_W:
             if (snake.direction !== "down")
@@ -56,11 +57,23 @@ Item {
         snake.startMove()
     }
 
+    function check(snake) {
+        var head = snake.getHead()
+        console.log(head.x, head.y)
+        if (head.x >= canvas.width || head.y > canvas.height || head.x < 0
+                || head.y <= 0) {
+            snake.destroy()
+            console.log("die")
+        }
+    }
+
     Component.onCompleted: {
         snakeComponent = Qt.createComponent("Snake.qml")
         snake = snakeComponent.createObject(canvas, {
                                                 "direction": "right",
-                                                "atomSize": atomSize
+                                                "atomSize": atomSize,
+                                                "color": 'orange'
                                             })
+        snake.finishMove.connect(check)
     }
 }

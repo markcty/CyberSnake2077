@@ -6,27 +6,26 @@ import QtGraphicalEffects 1.0
 
 Item {
     id: snakePart
-    property int atomSize
+    property real atomSize
+    property color color
+    property real partSize
     RectangularGlow {
         id: effect
         anchors.fill: part
         spread: 0.4
-        color: "#2e91ed"
+        color: snakePart.color
         cornerRadius: part.radius + glowRadius
         SequentialAnimation on glowRadius {
             NumberAnimation {
                 from: -5
                 to: 10
-                easing {
-                    type: Easing.OutQuint
-                }
-
+                easing.type: Easing.OutQuint
                 duration: 200
             }
             NumberAnimation {
                 from: 10
                 to: -5
-                duration: 5000
+                duration: 1000
                 easing.type: Easing.OutQuart
             }
         }
@@ -38,15 +37,15 @@ Item {
     }
     Rectangle {
         id: part
-        width: atomSize * 4 / 5
+        width: partSize
         height: width
         radius: height / 2
         color: "#212121"
         border {
-            color: '#2e91ed'
+            color: snakePart.color
             width: 2
         }
-        x: atomSize * 1 / 10
+        x: (atomSize - partSize) / 2
         y: x
         NumberAnimation on opacity {
             from: 0.5
@@ -66,7 +65,7 @@ Item {
         property: "opacity"
         from: 1
         to: 0
-        duration: 400
+        duration: 300
         onRunningChanged: {
             if (running === false)
                 snakePart.destroy()
