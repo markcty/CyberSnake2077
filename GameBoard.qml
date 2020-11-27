@@ -14,7 +14,9 @@ Item {
     property var board
     property int size: canvas.height / atomSize
     property var plusLifeComponent
+    property var acclerateComponent
     property int plusLifeNum: 3
+    property int acclerateNum: 3
 
     RectangularGlow {
         id: canvasGlow
@@ -72,14 +74,14 @@ Item {
 
     function randomlyGenerateFood() {
         var ret = []
-        for (var i = 0; i < plusLifeNum; i++) {
+        for (var i = 0; i < plusLifeNum + acclerateNum; i++) {
             while (true) {
                 let x = Math.floor(Math.random() * size)
                 let y = Math.floor(Math.random() * size)
                 if (ret.indexOf({
                                     "x": x,
                                     "y": y
-                                }) === -1) {
+                                }) === -1 && !board[y][x]) {
                     ret.push({
                                  "x": x,
                                  "y": y
@@ -106,17 +108,28 @@ Item {
                                             })
         snake.finishMove.connect(check)
         // createFood
-        // create plus one life food
         plusLifeComponent = Qt.createComponent("PlusLife.qml")
-        let plusLifes = randomlyGenerateFood()
-        for (i = 0; i < plusLifes.length; i++) {
-            var objectX = plusLifes[i].x
-            var objectY = plusLifes[i].y
+        let food = randomlyGenerateFood()
+        // create plus one life food
+        for (i = 0; i < plusLifeNum; i++) {
+            let objectX = food[i].x
+            let objectY = food[i].y
             board[objectY][objectX] = plusLifeComponent.createObject(canvas, {
                                                                          "atomSize": atomSize,
                                                                          "x": objectX * atomSize,
                                                                          "y": objectY * atomSize
                                                                      })
+        }
+        // create Accelerate food
+        acclerateComponent = Qt.createComponent("Accelerate.qml")
+        for (i = plusLifeNum; i < plusLifeNum + acclerateNum; i++) {
+            let objectX = food[i].x
+            let objectY = food[i].y
+            board[objectY][objectX] = acclerateComponent.createObject(canvas, {
+                                                                          "atomSize": atomSize,
+                                                                          "x": objectX * atomSize,
+                                                                          "y": objectY * atomSize
+                                                                      })
         }
     }
 }

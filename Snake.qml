@@ -10,7 +10,7 @@ Item {
     property var snakeParts
     property var snakePartComponent
     property string direction
-    property real atomSize: 30
+    property real atomSize: 26
     property color color
     property var board
     property int lifes: 3
@@ -20,7 +20,7 @@ Item {
     Component.onCompleted: {
         snakePartComponent = Qt.createComponent("SnakePart.qml")
         snakeParts = []
-        for (var x = atomSize; x <= 5 * atomSize; x += atomSize) {
+        for (var x = atomSize; x <= 8 * atomSize; x += atomSize) {
             snakeParts.push(snakePartComponent.createObject(snake, {
                                                                 "x": x,
                                                                 "y": atomSize,
@@ -28,6 +28,7 @@ Item {
                                                                 "color": snake.color,
                                                                 "partSize": atomSize * 4 / 5
                                                             }))
+            board[1][x / atomSize] = snake
         }
         for (var i = 0; i < 3; i++) {
             snakeParts[i].partSize = atomSize * (i + 5) / 10
@@ -65,11 +66,19 @@ Item {
             snake.destroy()
             return
         }
-        // to-do: detect collision with other items
+
+        // detect collision with other items
         if (board[i][j]) {
-            console.log(board[i][j].name)
+            // detect food-plus-one-life
             if (board[i][j] instanceof PlusLife) {
                 snake.lifes++
+                board[i][j].destroy()
+            }
+            // detect accelrate food
+            if (board[i][j] instanceof Accelerate) {
+                moveTimer.interval = 200
+                acclerateTimer.stop()
+                acclerateTimer.start()
                 board[i][j].destroy()
             }
         }
@@ -105,6 +114,15 @@ Item {
         interval: 400
         onTriggered: {
             snake.move()
+        }
+    }
+    Timer {
+        id: acclerateTimer
+        running: false
+        repeat: false
+        interval: 5000
+        onTriggered: {
+            moveTimer.interval = 400
         }
     }
 }

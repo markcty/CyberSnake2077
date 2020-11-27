@@ -6,7 +6,7 @@ import QtGraphicalEffects 1.0
 
 Item {
     id: plusLife
-    property int atomSize: 30
+    property real atomSize: 30
     width: atomSize
     height: atomSize
     RectangularGlow {

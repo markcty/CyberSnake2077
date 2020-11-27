@@ -5,5 +5,6 @@
         <file>Snake.qml</file>
         <file>SnakePart.qml</file>
         <file>PlusLife.qml</file>
+        <file>Accelerate.qml</file>
     </qresource>
 </RCC>
