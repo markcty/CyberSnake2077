@@ -14,23 +14,11 @@ Item {
     property color color
     property var gameBoard
     property int lifes: 3
+    property int defaultLength: 5
 
     Component.onCompleted: {
         snakePartComponent = Qt.createComponent("SnakePart.qml")
-        snakeParts = []
-        for (var x = atomSize; x <= 4 * atomSize; x += atomSize) {
-            snakeParts.push(snakePartComponent.createObject(snake, {
-                                                                "x": x,
-                                                                "y": atomSize,
-                                                                "atomSize": atomSize,
-                                                                "color": snake.color,
-                                                                "partSize": atomSize * 4 / 5
-                                                            }))
-            gameBoard.board[1][x / atomSize] = snake
-        }
-        for (var i = 0; i < 3; i++) {
-            snakeParts[i].partSize = atomSize * (i + 5) / 10
-        }
+        createSnake()
     }
 
     function move() {
@@ -63,7 +51,7 @@ Item {
         }
 
         // detect collision with other items
-        if (gameBoard.board[i][j]) {
+        if (gameBoard.board[i][j] && gameBoard.board[i][j].destroy) {
             // detect food-plus-one-life
             if (gameBoard.board[i][j] instanceof PlusLife) {
                 snake.lifes++
@@ -83,6 +71,8 @@ Item {
                 gameBoard.board[i][j].destroy()
                 gameBoard.board[i][j] = null
                 gameBoard.randomlyGenerateFood(gameBoard.foodComponent)
+            } else if (gameBoard.board[i][j] instanceof Snake) {
+                gameBoard.board[i][j].destroy()
             }
         }
         // delete the tail
@@ -93,7 +83,7 @@ Item {
             i = tail.y / atomSize
             gameBoard.board[i][j] = null
         }
-        // create head
+        // create new head
         snakeParts.push(snakePartComponent.createObject(snake, {
                                                             "x": nextX,
                                                             "y": nextY,
@@ -102,21 +92,52 @@ Item {
                                                             "partSize": atomSize * 4 / 5
                                                         }))
         gameBoard.board[nextY / atomSize][nextX / atomSize] = snake
-        // make tail look smaller
-        for (i = 0; i < 3; i++) {
-            snakeParts[i].partSize = atomSize * (i + 5) / 10
+        // adjust body size
+        var size = 0.3, delta = (0.8 - 0.3) / snakeParts.length
+        for (i = 0; i < snakeParts.length; i++) {
+            snakeParts[i].partSize = atomSize * (size + delta * i)
+        }
+    }
+
+    function createSnake() {
+        // find place to generate the snake
+        var boardSize = gameBoard.size, initI, initJ
+        for (var i = 0; i < boardSize; i++) {
+            let ok = true
+            for (var j = 0; j < boardSize - defaultLength; j++) {
+                for (var k = 0; k < defaultLength; k++)
+                    if (gameBoard.board[i][j + k]) {
+                        ok = false
+                        break
+                    }
+                if (ok) {
+                    initI = i
+                    initJ = j
+                    break
+                }
+            }
+            if (ok)
+                break
+        }
+        snakeParts = []
+        for (var x = initJ * atomSize; x <= defaultLength * atomSize; x += atomSize) {
+            snakeParts.push(snakePartComponent.createObject(snake, {
+                                                                "x": x,
+                                                                "y": initI * atomSize,
+                                                                "atomSize": atomSize,
+                                                                "color": snake.color,
+                                                                "partSize": atomSize * 4 / 5
+                                                            }))
+            gameBoard.board[initI][x / atomSize] = snake
+        }
+        var size = 0.3, delta = (0.8 - 0.3) / snakeParts.length
+        for (i = 0; i < snakeParts.length; i++) {
+            snakeParts[i].partSize = atomSize * (size + delta * i)
         }
     }
 
     function startMove() {
         moveTimer.start()
-    }
-
-    function getHead() {
-        return {
-            "x": snakeParts[snakeParts.length - 1].x,
-            "y": snakeParts[snakeParts.length - 1].y
-        }
     }
 
     Timer {

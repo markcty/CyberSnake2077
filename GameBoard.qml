@@ -9,7 +9,7 @@ Item {
     width: 800
     height: 800
     property real atomSize: 30
-    property var snake
+    property var snakes: []
     property var snakeComponent
     property var board
     property int size: canvas.height / atomSize
@@ -19,6 +19,8 @@ Item {
     property int plusLifeNum: 2
     property int acclerateNum: 2
     property int foodNumber: 5
+    property int players: 2
+    readonly property var snakeColor: ['orange', '#2e91ed']
 
     RectangularGlow {
         id: canvasGlow
@@ -39,32 +41,54 @@ Item {
     }
 
     Keys.onPressed: {
-        if (!snake)
-            return
         // to-do: user input stack
-        switch (event.key) {
-        case Qt.Key_W:
-            if (snake.direction !== "down")
-                snake.direction = "up"
-            break
-        case Qt.Key_A:
-            if (snake.direction !== "right")
-                snake.direction = "left"
-            break
-        case Qt.Key_S:
-            if (snake.direction !== "up")
-                snake.direction = "down"
-            break
-        case Qt.Key_D:
-            if (snake.direction !== "left")
-                snake.direction = "right"
-            break
+        if (snakes[0]) {
+            switch (event.key) {
+            case Qt.Key_W:
+                if (snakes[0].direction !== "down")
+                    snakes[0].direction = "up"
+                break
+            case Qt.Key_A:
+                if (snakes[0].direction !== "right")
+                    snakes[0].direction = "left"
+                break
+            case Qt.Key_S:
+                if (snakes[0].direction !== "up")
+                    snakes[0].direction = "down"
+                break
+            case Qt.Key_D:
+                if (snakes[0].direction !== "left")
+                    snakes[0].direction = "right"
+                break
+            }
+        }
+        if (snakes[1]) {
+            switch (event.key) {
+            case Qt.Key_I:
+                if (snakes[1].direction !== "down")
+                    snakes[1].direction = "up"
+                break
+            case Qt.Key_J:
+                if (snakes[1].direction !== "right")
+                    snakes[1].direction = "left"
+                break
+            case Qt.Key_K:
+                if (snakes[1].direction !== "up")
+                    snakes[1].direction = "down"
+                break
+            case Qt.Key_L:
+                if (snakes[1].direction !== "left")
+                    snakes[1].direction = "right"
+                break
+            }
         }
         event.accepted = true
     }
 
     function startGame() {
-        snake.startMove()
+        initBoard()
+        for (var i = 0; i < snakes.length; i++)
+            snakes[i].startMove()
     }
 
     function randomlyGenerateFood(foodComponent) {
@@ -82,20 +106,36 @@ Item {
         }
     }
 
-    Component.onCompleted: {
-        // createSnake
-        snakeComponent = Qt.createComponent("Snake.qml")
+    function initBoard() {
+        var i, j
+        // delete snakes before
+        if (snakes.length != 0)
+            snakes.forEach(function (snake) {
+                if (snake.destroy)
+                    snake.destroy()
+            })
+        snakes = []
+        // init the board
+        if (board) {
+            for (i = 0; i < size; i++) {
+                for (j = 0; j < size; j++)
+                    if (board[i][j] && board[i][j].destroy)
+                        board[i][j].destroy()
+            }
+        }
         board = new Array(canvas.height / atomSize)
-        for (var i = 0; i < size; i++) {
+        for (i = 0; i < size; i++) {
             board[i] = new Array(size)
         }
-        snake = snakeComponent.createObject(canvas, {
-                                                "direction": "right",
-                                                "atomSize": atomSize,
-                                                "color": 'orange',
-                                                "gameBoard": gameBoard
-                                            })
-
+        // create snakes
+        for (i = 0; i < players; i++) {
+            snakes[i] = snakeComponent.createObject(canvas, {
+                                                        "direction": "right",
+                                                        "atomSize": atomSize,
+                                                        "color": snakeColor[i],
+                                                        "gameBoard": gameBoard
+                                                    })
+        }
         // create plus one life food
         plusLifeComponent = Qt.createComponent("PlusLife.qml")
         for (i = 0; i < plusLifeNum; i++) {
@@ -112,5 +152,10 @@ Item {
         for (i = 0; i < foodNumber; i++) {
             randomlyGenerateFood(foodComponent)
         }
+    }
+
+    Component.onCompleted: {
+        // createSnake
+        snakeComponent = Qt.createComponent("Snake.qml")
     }
 }
