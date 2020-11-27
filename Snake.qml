@@ -12,15 +12,13 @@ Item {
     property string direction
     property real atomSize: 26
     property color color
-    property var board
+    property var gameBoard
     property int lifes: 3
-
-    signal finishMove(var snake)
 
     Component.onCompleted: {
         snakePartComponent = Qt.createComponent("SnakePart.qml")
         snakeParts = []
-        for (var x = atomSize; x <= 8 * atomSize; x += atomSize) {
+        for (var x = atomSize; x <= 4 * atomSize; x += atomSize) {
             snakeParts.push(snakePartComponent.createObject(snake, {
                                                                 "x": x,
                                                                 "y": atomSize,
@@ -28,7 +26,7 @@ Item {
                                                                 "color": snake.color,
                                                                 "partSize": atomSize * 4 / 5
                                                             }))
-            board[1][x / atomSize] = snake
+            gameBoard.board[1][x / atomSize] = snake
         }
         for (var i = 0; i < 3; i++) {
             snakeParts[i].partSize = atomSize * (i + 5) / 10
@@ -36,11 +34,7 @@ Item {
     }
 
     function move() {
-        // delete the tail
-        var tail = snakeParts.shift()
-        tail.startDestroy()
-        var j = tail.x / atomSize, i = tail.y / atomSize
-        board[i][j] = null
+        var i, j, longer
         // caculate next position
         let dx = 0, dy = 0
         switch (direction) {
@@ -62,25 +56,42 @@ Item {
         // detect collision with border
         j = nextX / atomSize
         i = nextY / atomSize
-        if (i < 0 || i >= board.length || j < 0 || j >= board.length) {
+        if (i < 0 || i >= gameBoard.board.length || j < 0
+                || j >= gameBoard.board.length) {
             snake.destroy()
             return
         }
 
         // detect collision with other items
-        if (board[i][j]) {
+        if (gameBoard.board[i][j]) {
             // detect food-plus-one-life
-            if (board[i][j] instanceof PlusLife) {
+            if (gameBoard.board[i][j] instanceof PlusLife) {
                 snake.lifes++
-                board[i][j].destroy()
-            }
-            // detect accelrate food
-            if (board[i][j] instanceof Accelerate) {
+                gameBoard.board[i][j].destroy()
+                gameBoard.board[i][j] = null
+                gameBoard.randomlyGenerateFood(gameBoard.plusLifeComponent)
+            } // detect accelrate food
+            else if (gameBoard.board[i][j] instanceof Accelerate) {
                 moveTimer.interval = 200
                 acclerateTimer.stop()
                 acclerateTimer.start()
-                board[i][j].destroy()
+                gameBoard.board[i][j].destroy()
+                gameBoard.board[i][j] = null
+                gameBoard.randomlyGenerateFood(gameBoard.accelerateComponent)
+            } else if (gameBoard.board[i][j] instanceof Food) {
+                longer = true
+                gameBoard.board[i][j].destroy()
+                gameBoard.board[i][j] = null
+                gameBoard.randomlyGenerateFood(gameBoard.foodComponent)
             }
+        }
+        // delete the tail
+        if (!longer) {
+            var tail = snakeParts.shift()
+            tail.startDestroy()
+            j = tail.x / atomSize
+            i = tail.y / atomSize
+            gameBoard.board[i][j] = null
         }
         // create head
         snakeParts.push(snakePartComponent.createObject(snake, {
@@ -90,11 +101,11 @@ Item {
                                                             "color": snake.color,
                                                             "partSize": atomSize * 4 / 5
                                                         }))
+        gameBoard.board[nextY / atomSize][nextX / atomSize] = snake
         // make tail look smaller
         for (i = 0; i < 3; i++) {
             snakeParts[i].partSize = atomSize * (i + 5) / 10
         }
-        snake.finishMove(snake)
     }
 
     function startMove() {

@@ -6,5 +6,10 @@
         <file>SnakePart.qml</file>
         <file>PlusLife.qml</file>
         <file>Accelerate.qml</file>
+        <file>tomato.svg</file>
+        <file>cherry.svg</file>
+        <file>watermelon.svg</file>
+        <file>apple.svg</file>
+        <file>Food.qml</file>
     </qresource>
 </RCC>
