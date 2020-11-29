@@ -16,6 +16,8 @@ Window {
         rowSpacing: 5
         anchors.fill: parent
         columns: 2
+        property var gameBoardComponent
+        property var gameBoard
 
         ColumnLayout {
             id: buttonColLayout
@@ -32,8 +34,12 @@ Window {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 font.pointSize: 15
                 onClicked: {
-                    gameBoard.focus = true
-                    gameBoard.startGame()
+                    if (gridLayout.gameBoard)
+                        gridLayout.gameBoard.destroy()
+                    gridLayout.gameBoard = gridLayout.gameBoardComponent.createObject(
+                                gridLayout)
+                    gridLayout.gameBoard.focus = true
+                    gridLayout.gameBoard.startGame()
                 }
             }
 
@@ -46,8 +52,8 @@ Window {
             }
         }
 
-        GameBoard {
-            id: gameBoard
+        Component.onCompleted: {
+            gridLayout.gameBoardComponent = Qt.createComponent("GameBoard.qml")
         }
     }
 }

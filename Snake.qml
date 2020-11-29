@@ -7,7 +7,7 @@ Item {
     id: snake
     anchors.fill: parent
 
-    property var snakeParts
+    property var snakeBody: []
     property var snakePartComponent
     property string direction
     property real atomSize: 26
@@ -39,105 +39,129 @@ Item {
             dx = atomSize
             break
         }
-        let nextX = snakeParts[snakeParts.length - 1].x + dx
-        let nextY = snakeParts[snakeParts.length - 1].y + dy
-        // detect collision with border
+        let nextX = snakeBody[snakeBody.length - 1].x + dx
+        let nextY = snakeBody[snakeBody.length - 1].y + dy
         j = nextX / atomSize
         i = nextY / atomSize
+        // detect collision with border
         if (i < 0 || i >= gameBoard.board.length || j < 0
                 || j >= gameBoard.board.length) {
-            snake.destroy()
+            snake.rebirth()
             return
         }
-
         // detect collision with other items
-        if (gameBoard.board[i][j] && gameBoard.board[i][j].destroy) {
+        var next = gameBoard.board[i][j]
+        if (next) {
             // detect food-plus-one-life
-            if (gameBoard.board[i][j] instanceof PlusLife) {
+            if (next instanceof PlusLife) {
                 snake.lifes++
-                gameBoard.board[i][j].destroy()
-                gameBoard.board[i][j] = null
+                next.destroy()
+                next = null
                 gameBoard.randomlyGenerateFood(gameBoard.plusLifeComponent)
             } // detect accelrate food
-            else if (gameBoard.board[i][j] instanceof Accelerate) {
+            else if (next instanceof Accelerate) {
                 moveTimer.interval = 200
                 acclerateTimer.stop()
                 acclerateTimer.start()
-                gameBoard.board[i][j].destroy()
-                gameBoard.board[i][j] = null
+                next.destroy()
+                next = null
                 gameBoard.randomlyGenerateFood(gameBoard.accelerateComponent)
-            } else if (gameBoard.board[i][j] instanceof Food) {
+            } // detect normal food
+            else if (next instanceof Food) {
                 longer = true
-                gameBoard.board[i][j].destroy()
-                gameBoard.board[i][j] = null
+                next.destroy()
+                next = null
                 gameBoard.randomlyGenerateFood(gameBoard.foodComponent)
-            } else if (gameBoard.board[i][j] instanceof Snake) {
-                gameBoard.board[i][j].destroy()
+            } // detect other snake
+            else if (next instanceof Snake) {
+                next.rebirth()
+                if (next === snake)
+                    return
             }
         }
         // delete the tail
         if (!longer) {
-            var tail = snakeParts.shift()
+            var tail = snakeBody.shift()
             tail.startDestroy()
             j = tail.x / atomSize
             i = tail.y / atomSize
             gameBoard.board[i][j] = null
         }
         // create new head
-        snakeParts.push(snakePartComponent.createObject(snake, {
-                                                            "x": nextX,
-                                                            "y": nextY,
-                                                            "atomSize": atomSize,
-                                                            "color": snake.color,
-                                                            "partSize": atomSize * 4 / 5
-                                                        }))
+        snakeBody.push(snakePartComponent.createObject(snake, {
+                                                           "x": nextX,
+                                                           "y": nextY,
+                                                           "atomSize": atomSize,
+                                                           "color": snake.color,
+                                                           "partSize": atomSize * 4 / 5
+                                                       }))
         gameBoard.board[nextY / atomSize][nextX / atomSize] = snake
         // adjust body size
-        var size = 0.3, delta = (0.8 - 0.3) / snakeParts.length
-        for (i = 0; i < snakeParts.length; i++) {
-            snakeParts[i].partSize = atomSize * (size + delta * i)
+        var size = 0.3, delta = (0.8 - 0.3) / snakeBody.length
+        for (i = 0; i < snakeBody.length; i++) {
+            snakeBody[i].partSize = atomSize * (size + delta * i)
         }
     }
 
     function createSnake() {
-        // find place to generate the snake
-        var boardSize = gameBoard.size, initI, initJ
-        for (var i = 0; i < boardSize; i++) {
-            let ok = true
-            for (var j = 0; j < boardSize - defaultLength; j++) {
-                for (var k = 0; k < defaultLength; k++)
-                    if (gameBoard.board[i][j + k]) {
-                        ok = false
-                        break
-                    }
-                if (ok) {
-                    initI = i
-                    initJ = j
+        snakeBody = []
+        // randomly find place to generate the snake
+        var boardSize = gameBoard.size, initI, initJ, i, j, tries = 10, ok = false
+        while (!ok) {
+            i = Math.floor(Math.random() * (boardSize - defaultLength))
+            j = Math.floor(Math.random() * (boardSize - defaultLength))
+            ok = true
+            for (var k = 0; k < defaultLength; k++)
+                if (gameBoard.board[i][j + k]) {
+                    ok = false
                     break
                 }
-            }
-            if (ok)
+            if (ok) {
+                initI = i
+                initJ = j
                 break
+            }
         }
-        snakeParts = []
-        for (var x = initJ * atomSize; x <= defaultLength * atomSize; x += atomSize) {
-            snakeParts.push(snakePartComponent.createObject(snake, {
-                                                                "x": x,
-                                                                "y": initI * atomSize,
-                                                                "atomSize": atomSize,
-                                                                "color": snake.color,
-                                                                "partSize": atomSize * 4 / 5
-                                                            }))
-            gameBoard.board[initI][x / atomSize] = snake
+        snakeBody = []
+        console.log("create")
+        for (var x = 0; x < defaultLength; x++) {
+            snakeBody.push(snakePartComponent.createObject(snake, {
+                                                               "x": (initJ + x) * atomSize,
+                                                               "y": initI * atomSize,
+                                                               "atomSize": atomSize,
+                                                               "color": snake.color,
+                                                               "partSize": atomSize * 4 / 5
+                                                           }))
+            gameBoard.board[initI][initJ + x] = snake
+            let t = initJ + x
+            console.log("create: (" + initI + "," + t + ")")
         }
-        var size = 0.3, delta = (0.8 - 0.3) / snakeParts.length
-        for (i = 0; i < snakeParts.length; i++) {
-            snakeParts[i].partSize = atomSize * (size + delta * i)
+        // alter the size
+        var size = 0.3, delta = (0.8 - 0.3) / snakeBody.length
+        for (i = 0; i < snakeBody.length; i++) {
+            snakeBody[i].partSize = atomSize * (size + delta * i)
         }
     }
 
     function startMove() {
         moveTimer.start()
+    }
+
+    function rebirth() {
+        // clear the board
+        if (!--lifes)
+            snake.destroy()
+        console.log("rebirth")
+        for (var i = 0; i < snakeBody.length; i++) {
+            gameBoard.board[snakeBody[i].y / atomSize][snakeBody[i].x / atomSize] = null
+            console.log("delete: (" + snakeBody[i].y / atomSize + ","
+                        + snakeBody[i].x / atomSize + ")")
+            snakeBody[i].startDestroy()
+        }
+        createSnake()
+        snake.direction = "right"
+        moveTimer.stop()
+        rebirthTimer.start()
     }
 
     Timer {
@@ -155,6 +179,15 @@ Item {
         interval: 5000
         onTriggered: {
             moveTimer.interval = 400
+        }
+    }
+    Timer {
+        id: rebirthTimer
+        running: false
+        repeat: false
+        interval: 3000
+        onTriggered: {
+            snake.startMove()
         }
     }
 }

@@ -108,13 +108,6 @@ Item {
 
     function initBoard() {
         var i, j
-        // delete snakes before
-        if (snakes.length != 0)
-            snakes.forEach(function (snake) {
-                if (snake.destroy)
-                    snake.destroy()
-            })
-        snakes = []
         // init the board
         if (board) {
             for (i = 0; i < size; i++) {
@@ -126,6 +119,8 @@ Item {
         board = new Array(canvas.height / atomSize)
         for (i = 0; i < size; i++) {
             board[i] = new Array(size)
+            for (j = 0; j < size; j++)
+                board[i][j] = null
         }
         // create snakes
         for (i = 0; i < players; i++) {
