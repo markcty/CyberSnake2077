@@ -19,7 +19,7 @@ Item {
     property int plusLifeNum: 2
     property int acclerateNum: 2
     property int foodNumber: 5
-    property int players: 2
+    property int players: 1
     readonly property var snakeColor: ['orange', '#2e91ed']
 
     RectangularGlow {

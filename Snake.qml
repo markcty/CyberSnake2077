@@ -56,22 +56,21 @@ Item {
             if (next instanceof PlusLife) {
                 snake.lifes++
                 next.destroy()
-                next = null
+                gameBoard.board[i][j] = null
                 gameBoard.randomlyGenerateFood(gameBoard.plusLifeComponent)
             } // detect accelrate food
             else if (next instanceof Accelerate) {
-                moveTimer.interval = 200
-                acclerateTimer.stop()
-                acclerateTimer.start()
+                moveTimer.accelerate()
                 next.destroy()
-                next = null
+                gameBoard.board[i][j] = null
                 gameBoard.randomlyGenerateFood(gameBoard.accelerateComponent)
             } // detect normal food
             else if (next instanceof Food) {
                 longer = true
                 next.destroy()
-                next = null
+                gameBoard.board[i][j] = null
                 gameBoard.randomlyGenerateFood(gameBoard.foodComponent)
+                moveTimer.speed -= 20
             } // detect other snake
             else if (next instanceof Snake) {
                 next.rebirth()
@@ -159,7 +158,8 @@ Item {
             snakeBody[i].startDestroy()
         }
         createSnake()
-        snake.direction = "right"
+        direction = "right"
+        moveTimer.interval = 400
         moveTimer.stop()
         rebirthTimer.start()
     }
@@ -167,9 +167,19 @@ Item {
     Timer {
         id: moveTimer
         repeat: true
+        property real speed: 400
         interval: 400
         onTriggered: {
             snake.move()
+        }
+        onSpeedChanged: {
+            if (speed < 100)
+                speed = 100
+            interval = speed
+        }
+        function accelerate() {
+            interval = speed / 1.5
+            acclerateTimer.start()
         }
     }
     Timer {
@@ -178,9 +188,10 @@ Item {
         repeat: false
         interval: 5000
         onTriggered: {
-            moveTimer.interval = 400
+            moveTimer.interval = moveTimer.speed
         }
     }
+
     Timer {
         id: rebirthTimer
         running: false
