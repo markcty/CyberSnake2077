@@ -29,10 +29,10 @@ Window {
 
             Button {
                 id: startButton
-                text: "Start"
+                text: gridLayout.gameBoard ? "Restart" : "Start"
                 Layout.rightMargin: 0
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                font.pointSize: 15
+                font.pointSize: 16
                 onClicked: {
                     if (gridLayout.gameBoard)
                         gridLayout.gameBoard.destroy()
@@ -46,15 +46,29 @@ Window {
             Button {
                 id: quitButton
                 text: "Quit"
-                font.pointSize: 15
-
+                font.pointSize: 16
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                onClicked: Qt.quit()
+            }
+            Button {
+                visible: {
+                    if (gridLayout.gameBoard)
+                        return true
+                    else
+                        return false
+                }
+                id: pauseButton
+                text: gridLayout.gameBoard.running ? "Pause" : "Continue"
+                font.pointSize: 16
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                onClicked: {
+                    gridLayout.gameBoard.running = !gridLayout.gameBoard.running
+                }
             }
         }
 
         Component.onCompleted: {
             gameBoardComponent = Qt.createComponent("GameBoard.qml")
-            console.log(gameBoardComponent.errorString())
         }
     }
 }

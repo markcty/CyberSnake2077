@@ -21,7 +21,8 @@ Item {
     property int acclerateNum: 2
     property int foodNumber: 5
     property int brickNumber: 5
-    property int players: 1
+    property int players: 2
+    property bool running: true
     readonly property var snakeColor: ['orange', '#2e91ed']
 
     RectangularGlow {
@@ -39,7 +40,7 @@ Item {
         height: 600
         color: '#212121'
         radius: 20
-        anchors.verticalCenter: parent.verticalCenter
+        anchors.centerIn: parent
     }
 
     Keys.onPressed: {
@@ -153,6 +154,15 @@ Item {
         brickComponent = Qt.createComponent("Brick.qml")
         for (i = 0; i < brickNumber; i++) {
             randomlyGenerateItem(brickComponent)
+        }
+    }
+    onRunningChanged: {
+        for (var i = 0; i < players; i++) {
+            if (running) {
+                snakes[i].startMove()
+                focus = true
+            } else
+                snakes[i].stopMove()
         }
     }
 }
