@@ -16,9 +16,11 @@ Item {
     property var plusLifeComponent
     property var accelerateComponent
     property var foodComponent
+    property var brickComponent
     property int plusLifeNum: 2
     property int acclerateNum: 2
     property int foodNumber: 5
+    property int brickNumber: 5
     property int players: 1
     readonly property var snakeColor: ['orange', '#2e91ed']
 
@@ -91,7 +93,7 @@ Item {
             snakes[i].startMove()
     }
 
-    function randomlyGenerateFood(foodComponent) {
+    function randomlyGenerateItem(foodComponent) {
         for (var i = 0; i < 10; i++) {
             let x = Math.floor(Math.random() * size)
             let y = Math.floor(Math.random() * size)
@@ -123,6 +125,7 @@ Item {
                 board[i][j] = null
         }
         // create snakes
+        snakeComponent = Qt.createComponent("Snake.qml")
         for (i = 0; i < players; i++) {
             snakes[i] = snakeComponent.createObject(canvas, {
                                                         "direction": "right",
@@ -134,23 +137,22 @@ Item {
         // create plus one life food
         plusLifeComponent = Qt.createComponent("PlusLife.qml")
         for (i = 0; i < plusLifeNum; i++) {
-            randomlyGenerateFood(plusLifeComponent)
+            randomlyGenerateItem(plusLifeComponent)
         }
         // create Accelerate food
         accelerateComponent = Qt.createComponent("Accelerate.qml")
         for (i = 0; i < acclerateNum; i++) {
-            randomlyGenerateFood(accelerateComponent)
+            randomlyGenerateItem(accelerateComponent)
         }
-
-        // createFood
+        // create normal food
         foodComponent = Qt.createComponent("Food.qml")
         for (i = 0; i < foodNumber; i++) {
-            randomlyGenerateFood(foodComponent)
+            randomlyGenerateItem(foodComponent)
         }
-    }
-
-    Component.onCompleted: {
-        // createSnake
-        snakeComponent = Qt.createComponent("Snake.qml")
+        // generate bricks
+        brickComponent = Qt.createComponent("Brick.qml")
+        for (i = 0; i < brickNumber; i++) {
+            randomlyGenerateItem(brickComponent)
+        }
     }
 }

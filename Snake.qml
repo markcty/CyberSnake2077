@@ -57,25 +57,30 @@ Item {
                 snake.lifes++
                 next.destroy()
                 gameBoard.board[i][j] = null
-                gameBoard.randomlyGenerateFood(gameBoard.plusLifeComponent)
+                gameBoard.randomlyGenerateItem(gameBoard.plusLifeComponent)
             } // detect accelrate food
             else if (next instanceof Accelerate) {
                 moveTimer.accelerate()
                 next.destroy()
                 gameBoard.board[i][j] = null
-                gameBoard.randomlyGenerateFood(gameBoard.accelerateComponent)
+                gameBoard.randomlyGenerateItem(gameBoard.accelerateComponent)
             } // detect normal food
             else if (next instanceof Food) {
                 longer = true
                 next.destroy()
                 gameBoard.board[i][j] = null
-                gameBoard.randomlyGenerateFood(gameBoard.foodComponent)
+                gameBoard.randomlyGenerateItem(gameBoard.foodComponent)
                 moveTimer.speed -= 20
             } // detect other snake
             else if (next instanceof Snake) {
                 next.rebirth()
+                // eat the snake itself
                 if (next === snake)
                     return
+            } // detect brick
+            else if (next instanceof Brick) {
+                rebirth()
+                return
             }
         }
         // delete the tail
@@ -175,10 +180,13 @@ Item {
         onSpeedChanged: {
             if (speed < 100)
                 speed = 100
-            interval = speed
+            if (!acclerateTimer.running) {
+                interval = speed
+            }
         }
         function accelerate() {
             interval = speed / 1.5
+            acclerateTimer.stop()
             acclerateTimer.start()
         }
     }

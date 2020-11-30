@@ -53,7 +53,8 @@ Window {
         }
 
         Component.onCompleted: {
-            gridLayout.gameBoardComponent = Qt.createComponent("GameBoard.qml")
+            gameBoardComponent = Qt.createComponent("GameBoard.qml")
+            console.log(gameBoardComponent.errorString())
         }
     }
 }

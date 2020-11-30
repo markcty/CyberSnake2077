@@ -19,7 +19,7 @@ Item {
     }
     Rectangle {
         id: rect
-        border.color: 'red'
+        border.color: '#e63946'
         color: "#212121"
         anchors.centerIn: parent
         radius: 5
@@ -29,7 +29,7 @@ Item {
             id: text
             anchors.centerIn: parent
             text: "+1"
-            color: 'red'
+            color: '#e63946'
         }
     }
 }
