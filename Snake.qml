@@ -152,6 +152,8 @@ Item {
     }
 
     function rebirth() {
+        // start animation
+        rebirthAnimation.start()
         // clear the board
         if (!--lifes)
             snake.destroy()
@@ -162,6 +164,7 @@ Item {
                         + snakeBody[i].x / atomSize + ")")
             snakeBody[i].startDestroy()
         }
+        // init the new snake
         createSnake()
         direction = "right"
         moveTimer.interval = 400
@@ -186,8 +189,7 @@ Item {
         }
         function accelerate() {
             interval = speed / 1.5
-            acclerateTimer.stop()
-            acclerateTimer.start()
+            acclerateTimer.restart()
         }
     }
     Timer {
@@ -207,6 +209,28 @@ Item {
         interval: 3000
         onTriggered: {
             snake.startMove()
+        }
+    }
+
+    SequentialAnimation {
+        id: rebirthAnimation
+        running: false
+        loops: 3
+        NumberAnimation {
+            target: snake
+            property: "opacity"
+            duration: 500
+            from: 1
+            to: 0
+            easing.type: Easing.InOutQuad
+        }
+        NumberAnimation {
+            target: snake
+            property: "opacity"
+            duration: 500
+            from: 0
+            to: 1
+            easing.type: Easing.InOutQuad
         }
     }
 }
