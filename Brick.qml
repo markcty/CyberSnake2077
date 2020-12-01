@@ -27,7 +27,6 @@ Item {
     }
     // drag
     property point beginPos
-    property bool caught: false
     property bool dragEnabled: false
     Drag.active: dragArea.drag.active
     MouseArea {
@@ -35,22 +34,27 @@ Item {
         enabled: dragEnabled
         anchors.fill: parent
         drag.target: parent
-        onPressed: {
-            caught = false
-            beginPos = Qt.point(brick.x, brick.y)
-        }
         onReleased: {
-            if (!brick.caught) {
+            var nextX = Math.floor(brick.x / atomSize) * atomSize
+            var nextY = Math.floor(brick.y / atomSize) * atomSize
+            var nextI = nextY / atomSize
+            var nextJ = nextX / atomSize
+            if (nextI < 0 || nextJ < 0 || nextI >= gameBoard.board.length
+                    || nextJ >= gameBoard.board.length) {
+                backAnimX.to = beginPos.x
+                backAnimY.to = beginPos.y
+                backAnim.start()
+            } else if (gameBoard.board[nextI][nextJ]) {
                 backAnimX.to = beginPos.x
                 backAnimY.to = beginPos.y
                 backAnim.start()
             } else {
-                gameBoard.board[Math.floor(
-                                    beginPos.y / atomSize)][Math.floor(
-                                                                beginPos.x / atomSize)] = null
-                brick.x -= brick.x % atomSize
-                brick.y -= brick.y % atomSize
-                gameBoard.board[brick.y / atomSize][brick.x / atomSize] = brick
+                console.log(beginPos.y, beginPos.x)
+                gameBoard.board[beginPos.y / atomSize][beginPos.x / atomSize] = null
+                brick.x = nextX
+                brick.y = nextY
+                gameBoard.board[nextI][nextJ] = brick
+                beginPos = Qt.point(brick.x, brick.y)
             }
         }
     }
@@ -72,5 +76,8 @@ Item {
             spring: 2
             damping: 0.2
         }
+    }
+    Component.onCompleted: {
+        beginPos = Qt.point(brick.x, brick.y)
     }
 }

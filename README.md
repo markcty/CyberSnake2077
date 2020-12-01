@@ -12,5 +12,5 @@ HW for SEP Project
 - [x] special food 1
 - [x] special food 2
 - [ ] special food 3
-- [ ] map editor
+- [x] map editor
 - [ ] ai snake

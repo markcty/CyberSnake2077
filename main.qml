@@ -7,8 +7,8 @@ import QtQuick.Controls.Material 2.12
 
 Window {
     visible: true
-    width: 1366
-    height: 768
+    width: 1600
+    height: 900
     color: "#272528"
     title: qsTr("Snake Game")
     Material.theme: Material.Dark
@@ -17,15 +17,15 @@ Window {
         id: gridLayout
         rowSpacing: 5
         anchors.fill: parent
-        columns: 2
+        columns: 3
         property var gameBoardComponent
         property var gameBoard
 
         ColumnLayout {
-            id: buttonColLayout
+            id: col1
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.preferredWidth: 300
-            Layout.preferredHeight: 300
+            Layout.preferredHeight: 500
             Button {
                 id: startButton
                 text: qsTr(gridLayout.gameBoard ? "Restart" : "Start")
@@ -35,7 +35,7 @@ Window {
                     if (gridLayout.gameBoard)
                         gridLayout.gameBoard.destroy()
                     gridLayout.gameBoard = gridLayout.gameBoardComponent.createObject(
-                                gridLayout)
+                                col2)
                     gridLayout.gameBoard.focus = true
                     gridLayout.gameBoard.startGame()
                 }
@@ -70,6 +70,67 @@ Window {
                            && gridLayout.gameBoard.editMode ? "Finish" : "Edit Map")
                 onClicked: {
                     gridLayout.gameBoard.editMode = !gridLayout.gameBoard.editMode
+                    var t = gridLayout.gameBoard.editMode
+                    pauseButton.enabled = !t
+                    startButton.enabled = !t
+
+                    addFoodButton.visible = t
+                    addAccelerateButton.visible = t
+                    addPlusLifeButton.visible = t
+                    addBrickButton.visible = t
+                }
+            }
+        }
+
+        ColumnLayout {
+            id: col2
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            Layout.preferredWidth: 1000
+            Layout.preferredHeight: 900
+        }
+
+        ColumnLayout {
+            id: col3
+            Layout.preferredHeight: 300
+            Layout.preferredWidth: 300
+            Button {
+                id: addFoodButton
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                visible: false
+                text: qsTr("add food")
+                onClicked: {
+                    gridLayout.gameBoard.randomlyGenerateItem(
+                                gridLayout.gameBoard.foodComponent)
+                }
+            }
+            Button {
+                id: addAccelerateButton
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                visible: false
+                text: qsTr("add accelerate food")
+                onClicked: {
+                    gridLayout.gameBoard.randomlyGenerateItem(
+                                gridLayout.gameBoard.accelerateComponent)
+                }
+            }
+            Button {
+                id: addPlusLifeButton
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                visible: false
+                text: qsTr("add Plus Life food")
+                onClicked: {
+                    gridLayout.gameBoard.randomlyGenerateItem(
+                                gridLayout.gameBoard.plusLifeComponent)
+                }
+            }
+            Button {
+                id: addBrickButton
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                visible: false
+                text: qsTr("add brick")
+                onClicked: {
+                    gridLayout.gameBoard.randomlyGenerateItem(
+                                gridLayout.gameBoard.brickComponent)
                 }
             }
         }

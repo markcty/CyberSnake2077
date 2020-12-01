@@ -6,8 +6,9 @@ import QtGraphicalEffects 1.0
 
 Item {
     id: gameBoard
-    width: 800
-    height: 800
+    width: 900
+    height: width
+    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
     property real atomSize: 30
     property var snakes: []
     property var snakeComponent
@@ -37,21 +38,11 @@ Item {
 
     Rectangle {
         id: canvas
-        width: 600
-        height: 600
+        width: 810
+        height: 810
         color: '#212121'
         radius: 20
         anchors.centerIn: parent
-        DropArea {
-            anchors.fill: parent
-            onPositionChanged: {
-                if (board[Math.floor(drag.y / 30)][Math.floor(drag.x / 30)])
-                    drag.source.caught = false
-                else
-                    drag.source.caught = true
-            }
-            onExited: drag.source.caught = false
-        }
     }
 
     Keys.onPressed: {
@@ -114,7 +105,8 @@ Item {
                                                              "atomSize": atomSize,
                                                              "x": x * atomSize,
                                                              "y": y * atomSize,
-                                                             "gameBoard": gameBoard
+                                                             "gameBoard": gameBoard,
+                                                             "dragEnabled": gameBoard.editMode
                                                          })
                 break
             }
@@ -186,7 +178,6 @@ Item {
                         || board[i][j] instanceof Accelerate
                         || board[i][j] instanceof PlusLife
                         || board[i][j] instanceof Brick) {
-                    console.log("drag")
                     board[i][j].dragEnabled = editMode
                 }
             }

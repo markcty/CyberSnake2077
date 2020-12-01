@@ -167,6 +167,7 @@ Item {
         direction = "right"
         moveTimer.speed = 400
         moveTimer.stop()
+        acclerateTimer.stop()
         rebirthTimer.start()
     }
 

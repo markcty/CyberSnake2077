@@ -33,9 +33,7 @@ Item {
             color: '#e63946'
         }
     }
-    // drag
     property point beginPos
-    property bool caught: false
     property bool dragEnabled: false
     Drag.active: dragArea.drag.active
     MouseArea {
@@ -43,22 +41,27 @@ Item {
         enabled: dragEnabled
         anchors.fill: parent
         drag.target: parent
-        onPressed: {
-            caught = false
-            beginPos = Qt.point(plusLife.x, plusLife.y)
-        }
         onReleased: {
-            if (!plusLife.caught) {
+            var nextX = Math.floor(plusLife.x / atomSize) * atomSize
+            var nextY = Math.floor(plusLife.y / atomSize) * atomSize
+            var nextI = nextY / atomSize
+            var nextJ = nextX / atomSize
+            if (nextI < 0 || nextJ < 0 || nextI >= gameBoard.board.length
+                    || nextJ >= gameBoard.board.length) {
+                backAnimX.to = beginPos.x
+                backAnimY.to = beginPos.y
+                backAnim.start()
+            } else if (gameBoard.board[nextI][nextJ]) {
                 backAnimX.to = beginPos.x
                 backAnimY.to = beginPos.y
                 backAnim.start()
             } else {
-                gameBoard.board[Math.floor(
-                                    beginPos.y / atomSize)][Math.floor(
-                                                                beginPos.x / atomSize)] = null
-                plusLife.x -= plusLife.x % atomSize
-                plusLife.y -= plusLife.y % atomSize
-                gameBoard.board[plusLife.y / atomSize][plusLife.x / atomSize] = plusLife
+                console.log(beginPos.y, beginPos.x)
+                gameBoard.board[beginPos.y / atomSize][beginPos.x / atomSize] = null
+                plusLife.x = nextX
+                plusLife.y = nextY
+                gameBoard.board[nextI][nextJ] = plusLife
+                beginPos = Qt.point(plusLife.x, plusLife.y)
             }
         }
     }
@@ -80,5 +83,8 @@ Item {
             spring: 2
             damping: 0.2
         }
+    }
+    Component.onCompleted: {
+        beginPos = Qt.point(plusLife.x, plusLife.y)
     }
 }

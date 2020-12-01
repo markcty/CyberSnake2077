@@ -152,7 +152,6 @@ Item {
 
     // drag
     property point beginPos
-    property bool caught: false
     property bool dragEnabled: false
     Drag.active: dragArea.drag.active
     MouseArea {
@@ -160,22 +159,27 @@ Item {
         enabled: dragEnabled
         anchors.fill: parent
         drag.target: parent
-        onPressed: {
-            caught = false
-            beginPos = Qt.point(accelerate.x, accelerate.y)
-        }
         onReleased: {
-            if (!accelerate.caught) {
+            var nextX = Math.floor(accelerate.x / atomSize) * atomSize
+            var nextY = Math.floor(accelerate.y / atomSize) * atomSize
+            var nextI = nextY / atomSize
+            var nextJ = nextX / atomSize
+            if (nextI < 0 || nextJ < 0 || nextI >= gameBoard.board.length
+                    || nextJ >= gameBoard.board.length) {
+                backAnimX.to = beginPos.x
+                backAnimY.to = beginPos.y
+                backAnim.start()
+            } else if (gameBoard.board[nextI][nextJ]) {
                 backAnimX.to = beginPos.x
                 backAnimY.to = beginPos.y
                 backAnim.start()
             } else {
-                gameBoard.board[Math.floor(
-                                    beginPos.y / atomSize)][Math.floor(
-                                                                beginPos.x / atomSize)] = null
-                accelerate.x -= accelerate.x % atomSize
-                accelerate.y -= accelerate.y % atomSize
-                gameBoard.board[accelerate.y / atomSize][accelerate.x / atomSize] = accelerate
+                console.log(beginPos.y, beginPos.x)
+                gameBoard.board[beginPos.y / atomSize][beginPos.x / atomSize] = null
+                accelerate.x = nextX
+                accelerate.y = nextY
+                gameBoard.board[nextI][nextJ] = accelerate
+                beginPos = Qt.point(accelerate.x, accelerate.y)
             }
         }
     }
@@ -197,5 +201,8 @@ Item {
             spring: 2
             damping: 0.2
         }
+    }
+    Component.onCompleted: {
+        beginPos = Qt.point(accelerate.x, accelerate.y)
     }
 }
