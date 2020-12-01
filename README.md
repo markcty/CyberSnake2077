@@ -5,7 +5,7 @@ HW for SEP Project
 - [x] snake
 - [x] brick
 - [x] normal food
-- [ ] pause
+- [x] pause
 - [ ] save game
 - [x] restart
 - [x] multiple players

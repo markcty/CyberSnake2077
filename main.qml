@@ -3,6 +3,7 @@ import QtQuick.Window 2.12
 import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
+import QtQuick.Controls.Material 2.12
 
 Window {
     visible: true
@@ -10,6 +11,7 @@ Window {
     height: 768
     color: "#272528"
     title: qsTr("Snake Game")
+    Material.theme: Material.Dark
 
     GridLayout {
         id: gridLayout
@@ -24,15 +26,11 @@ Window {
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.preferredWidth: 300
             Layout.preferredHeight: 300
-
-            spacing: 0
-
             Button {
                 id: startButton
-                text: gridLayout.gameBoard ? "Restart" : "Start"
+                text: qsTr(gridLayout.gameBoard ? "Restart" : "Start")
                 Layout.rightMargin: 0
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                font.pointSize: 16
                 onClicked: {
                     if (gridLayout.gameBoard)
                         gridLayout.gameBoard.destroy()
@@ -42,27 +40,36 @@ Window {
                     gridLayout.gameBoard.startGame()
                 }
             }
-
             Button {
                 id: quitButton
-                text: "Quit"
-                font.pointSize: 16
+                text: qsTr("Quit")
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 onClicked: Qt.quit()
             }
             Button {
-                visible: {
-                    if (gridLayout.gameBoard)
-                        return true
-                    else
-                        return false
-                }
                 id: pauseButton
-                text: gridLayout.gameBoard.running ? "Pause" : "Continue"
-                font.pointSize: 16
+                visible: gridLayout.gameBoard ? true : false
+                text: qsTr(!gridLayout.gameBoard
+                           || !gridLayout.gameBoard.running ? "Conitinue" : "Pause")
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 onClicked: {
                     gridLayout.gameBoard.running = !gridLayout.gameBoard.running
+                }
+            }
+            Button {
+                id: editMapButton
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                visible: {
+                    if (!gridLayout.gameBoard)
+                        return false
+                    if (!gridLayout.gameBoard.running)
+                        return true
+                    return false
+                }
+                text: qsTr(gridLayout.gameBoard
+                           && gridLayout.gameBoard.editMode ? "Finish" : "Edit Map")
+                onClicked: {
+                    gridLayout.gameBoard.editMode = !gridLayout.gameBoard.editMode
                 }
             }
         }

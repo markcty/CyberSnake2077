@@ -10,6 +10,7 @@ Item {
     property int atomSize: 30
     width: atomSize
     height: atomSize
+    property var gameBoard
     RectangularGlow {
         id: effect
         anchors.fill: rect
@@ -146,6 +147,55 @@ Item {
                 from: 1
                 to: 0
             }
+        }
+    }
+
+    // drag
+    property point beginPos
+    property bool caught: false
+    property bool dragEnabled: false
+    Drag.active: dragArea.drag.active
+    MouseArea {
+        id: dragArea
+        enabled: dragEnabled
+        anchors.fill: parent
+        drag.target: parent
+        onPressed: {
+            caught = false
+            beginPos = Qt.point(accelerate.x, accelerate.y)
+        }
+        onReleased: {
+            if (!accelerate.caught) {
+                backAnimX.to = beginPos.x
+                backAnimY.to = beginPos.y
+                backAnim.start()
+            } else {
+                gameBoard.board[Math.floor(
+                                    beginPos.y / atomSize)][Math.floor(
+                                                                beginPos.x / atomSize)] = null
+                accelerate.x -= accelerate.x % atomSize
+                accelerate.y -= accelerate.y % atomSize
+                gameBoard.board[accelerate.y / atomSize][accelerate.x / atomSize] = accelerate
+            }
+        }
+    }
+    ParallelAnimation {
+        id: backAnim
+        SpringAnimation {
+            id: backAnimX
+            target: accelerate
+            property: "x"
+            duration: 500
+            spring: 2
+            damping: 0.2
+        }
+        SpringAnimation {
+            id: backAnimY
+            target: accelerate
+            property: "y"
+            duration: 500
+            spring: 2
+            damping: 0.2
         }
     }
 }

@@ -20,9 +20,10 @@ Item {
     property int plusLifeNum: 2
     property int acclerateNum: 2
     property int foodNumber: 5
-    property int brickNumber: 5
-    property int players: 2
+    property int brickNumber: 8
+    property int players: 1
     property bool running: true
+    property bool editMode: false
     readonly property var snakeColor: ['orange', '#2e91ed']
 
     RectangularGlow {
@@ -41,6 +42,16 @@ Item {
         color: '#212121'
         radius: 20
         anchors.centerIn: parent
+        DropArea {
+            anchors.fill: parent
+            onPositionChanged: {
+                if (board[Math.floor(drag.y / 30)][Math.floor(drag.x / 30)])
+                    drag.source.caught = false
+                else
+                    drag.source.caught = true
+            }
+            onExited: drag.source.caught = false
+        }
     }
 
     Keys.onPressed: {
@@ -102,7 +113,8 @@ Item {
                 board[y][x] = foodComponent.createObject(canvas, {
                                                              "atomSize": atomSize,
                                                              "x": x * atomSize,
-                                                             "y": y * atomSize
+                                                             "y": y * atomSize,
+                                                             "gameBoard": gameBoard
                                                          })
                 break
             }
@@ -164,5 +176,19 @@ Item {
             } else
                 snakes[i].stopMove()
         }
+    }
+    onEditModeChanged: {
+        for (var i = 0; i < size; i++)
+            for (var j = 0; j < size; j++) {
+                if (!board[i][j])
+                    continue
+                if (board[i][j] instanceof Food
+                        || board[i][j] instanceof Accelerate
+                        || board[i][j] instanceof PlusLife
+                        || board[i][j] instanceof Brick) {
+                    console.log("drag")
+                    board[i][j].dragEnabled = editMode
+                }
+            }
     }
 }
