@@ -207,7 +207,8 @@ Item {
         repeat: false
         interval: 3000
         onTriggered: {
-            snake.startMove()
+            if (gameBoard.running)
+                snake.startMove()
         }
     }
 
