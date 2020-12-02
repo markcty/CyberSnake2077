@@ -50,40 +50,32 @@ Item {
         if (snakes[0]) {
             switch (event.key) {
             case Qt.Key_W:
-                if (snakes[0].direction !== "down")
-                    snakes[0].direction = "up"
+                snakes[0].inputStack.push("up")
                 break
             case Qt.Key_A:
-                if (snakes[0].direction !== "right")
-                    snakes[0].direction = "left"
+                snakes[0].inputStack.push("left")
                 break
             case Qt.Key_S:
-                if (snakes[0].direction !== "up")
-                    snakes[0].direction = "down"
+                snakes[0].inputStack.push("down")
                 break
             case Qt.Key_D:
-                if (snakes[0].direction !== "left")
-                    snakes[0].direction = "right"
+                snakes[0].inputStack.push("right")
                 break
             }
         }
         if (snakes[1]) {
             switch (event.key) {
-            case Qt.Key_I:
-                if (snakes[1].direction !== "down")
-                    snakes[1].direction = "up"
+            case Qt.Key_W:
+                snakes[1].inputStack.push("up")
                 break
-            case Qt.Key_J:
-                if (snakes[1].direction !== "right")
-                    snakes[1].direction = "left"
+            case Qt.Key_A:
+                snakes[1].inputStack.push("left")
                 break
-            case Qt.Key_K:
-                if (snakes[1].direction !== "up")
-                    snakes[1].direction = "down"
+            case Qt.Key_S:
+                snakes[1].inputStack.push("down")
                 break
-            case Qt.Key_L:
-                if (snakes[1].direction !== "left")
-                    snakes[1].direction = "right"
+            case Qt.Key_D:
+                snakes[1].inputStack.push("right")
                 break
             }
         }

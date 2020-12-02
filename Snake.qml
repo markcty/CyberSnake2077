@@ -10,6 +10,7 @@ Item {
     property var snakeBody: []
     property var snakePartComponent
     property string direction
+    property var inputStack: []
     property real atomSize: 26
     property color color
     property var gameBoard
@@ -25,6 +26,27 @@ Item {
         var i, j, longer
         // caculate next position
         let dx = 0, dy = 0
+        if (inputStack.length) {
+            let nextDirection = inputStack.shift()
+            switch (direction) {
+            case "up":
+                if (nextDirection !== "down")
+                    direction = nextDirection
+                break
+            case "left":
+                if (nextDirection !== "right")
+                    direction = nextDirection
+                break
+            case "right":
+                if (nextDirection !== "left")
+                    direction = nextDirection
+                break
+            case "down":
+                if (nextDirection !== "up")
+                    direction = nextDirection
+                break
+            }
+        }
         switch (direction) {
         case "up":
             dy = -atomSize
@@ -150,6 +172,7 @@ Item {
     }
     function stopMove() {
         moveTimer.stop()
+        inputStack = []
     }
 
     function rebirth() {
@@ -163,6 +186,7 @@ Item {
             snakeBody[i].startDestroy()
         }
         // init the new snake
+        inputStack = []
         createSnake()
         direction = "right"
         moveTimer.speed = 400
