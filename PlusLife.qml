@@ -48,9 +48,9 @@ Item {
             var nextJ = nextX / atomSize
             if (nextI < 0 || nextJ < 0 || nextI >= gameBoard.board.length
                     || nextJ >= gameBoard.board.length) {
-                backAnimX.to = beginPos.x
-                backAnimY.to = beginPos.y
-                backAnim.start()
+                // delete the object
+                gameBoard.board[beginPos.y / atomSize][beginPos.x / atomSize] = null
+                plusLife.destroy()
             } else if (gameBoard.board[nextI][nextJ]) {
                 backAnimX.to = beginPos.x
                 backAnimY.to = beginPos.y

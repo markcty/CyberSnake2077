@@ -97,7 +97,7 @@ Window {
                 id: addFoodButton
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 visible: false
-                text: qsTr("add food")
+                text: qsTr("Food")
                 onClicked: {
                     gridLayout.gameBoard.randomlyGenerateItem(
                                 gridLayout.gameBoard.foodComponent)
@@ -107,7 +107,7 @@ Window {
                 id: addAccelerateButton
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 visible: false
-                text: qsTr("add accelerate food")
+                text: qsTr("Accelerate")
                 onClicked: {
                     gridLayout.gameBoard.randomlyGenerateItem(
                                 gridLayout.gameBoard.accelerateComponent)
@@ -117,7 +117,7 @@ Window {
                 id: addPlusLifeButton
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 visible: false
-                text: qsTr("add Plus Life food")
+                text: qsTr("Plus Life")
                 onClicked: {
                     gridLayout.gameBoard.randomlyGenerateItem(
                                 gridLayout.gameBoard.plusLifeComponent)
@@ -127,7 +127,7 @@ Window {
                 id: addBrickButton
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 visible: false
-                text: qsTr("add brick")
+                text: qsTr("Brick")
                 onClicked: {
                     gridLayout.gameBoard.randomlyGenerateItem(
                                 gridLayout.gameBoard.brickComponent)

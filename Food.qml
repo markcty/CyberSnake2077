@@ -34,15 +34,16 @@ Item {
             var nextJ = nextX / atomSize
             if (nextI < 0 || nextJ < 0 || nextI >= gameBoard.board.length
                     || nextJ >= gameBoard.board.length) {
-                backAnimX.to = beginPos.x
-                backAnimY.to = beginPos.y
-                backAnim.start()
+                // delete the object
+                gameBoard.board[beginPos.y / atomSize][beginPos.x / atomSize] = null
+                food.destroy()
             } else if (gameBoard.board[nextI][nextJ]) {
+                // back to beginning position
                 backAnimX.to = beginPos.x
                 backAnimY.to = beginPos.y
                 backAnim.start()
             } else {
-                console.log(beginPos.y, beginPos.x)
+                // move to the new position
                 gameBoard.board[beginPos.y / atomSize][beginPos.x / atomSize] = null
                 food.x = nextX
                 food.y = nextY

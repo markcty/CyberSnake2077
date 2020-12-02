@@ -130,7 +130,6 @@ Item {
                 board[i][j] = null
         }
         // create snakes
-        snakeComponent = Qt.createComponent("Snake.qml")
         for (i = 0; i < players; i++) {
             snakes[i] = snakeComponent.createObject(canvas, {
                                                         "direction": "right",
@@ -140,22 +139,18 @@ Item {
                                                     })
         }
         // create plus one life food
-        plusLifeComponent = Qt.createComponent("PlusLife.qml")
         for (i = 0; i < plusLifeNum; i++) {
             randomlyGenerateItem(plusLifeComponent)
         }
         // create Accelerate food
-        accelerateComponent = Qt.createComponent("Accelerate.qml")
         for (i = 0; i < acclerateNum; i++) {
             randomlyGenerateItem(accelerateComponent)
         }
         // create normal food
-        foodComponent = Qt.createComponent("Food.qml")
         for (i = 0; i < foodNumber; i++) {
             randomlyGenerateItem(foodComponent)
         }
         // generate bricks
-        brickComponent = Qt.createComponent("Brick.qml")
         for (i = 0; i < brickNumber; i++) {
             randomlyGenerateItem(brickComponent)
         }
@@ -181,5 +176,13 @@ Item {
                     board[i][j].dragEnabled = editMode
                 }
             }
+    }
+
+    Component.onCompleted: {
+        snakeComponent = Qt.createComponent("Snake.qml")
+        plusLifeComponent = Qt.createComponent("PlusLife.qml")
+        accelerateComponent = Qt.createComponent("Accelerate.qml")
+        foodComponent = Qt.createComponent("Food.qml")
+        brickComponent = Qt.createComponent("Brick.qml")
     }
 }
