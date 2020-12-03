@@ -9,7 +9,7 @@ Item {
     property string name: "snake"
 
     property var snakeBody: []
-    property var snakePartComponent
+    property var snakeBodyComponent
     property string direction
     property var inputStack: []
     property real atomSize: 26
@@ -19,7 +19,7 @@ Item {
     property int defaultLength: 5
 
     Component.onCompleted: {
-        snakePartComponent = Qt.createComponent("SnakePart.qml")
+        snakeBodyComponent = Qt.createComponent("SnakeBody.qml")
         createSnake()
     }
 
@@ -98,6 +98,16 @@ Item {
                 next.destroy()
                 gameBoard.board[i][j] = null
                 gameBoard.randomlyGenerateItem(gameBoard.accelerateComponent)
+            } // detect color allergy food
+            else if (next.name === "colorAllergy") {
+                next.destroy()
+                gameBoard.board[i][j] = null
+                gameBoard.randomlyGenerateItem(gameBoard.colorAllergyComponent)
+                if (snake.color !== next.color) {
+                    rebirth()
+                    return
+                } else
+                    longer = true
             } // detect other snake
             else if (next.name === "snake") {
                 next.rebirth()
@@ -115,7 +125,7 @@ Item {
             gameBoard.board[i][j] = null
         }
         // create new head
-        snakeBody.push(snakePartComponent.createObject(snake, {
+        snakeBody.push(snakeBodyComponent.createObject(snake, {
                                                            "x": nextX,
                                                            "y": nextY,
                                                            "atomSize": atomSize,
@@ -151,7 +161,7 @@ Item {
         }
         snakeBody = []
         for (var x = 0; x < defaultLength; x++) {
-            snakeBody.push(snakePartComponent.createObject(snake, {
+            snakeBody.push(snakeBodyComponent.createObject(snake, {
                                                                "x": (initJ + x) * atomSize,
                                                                "y": initI * atomSize,
                                                                "atomSize": atomSize,

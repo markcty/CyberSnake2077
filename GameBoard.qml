@@ -18,10 +18,12 @@ Item {
     property var accelerateComponent
     property var foodComponent
     property var brickComponent
+    property var colorAllergyComponent
     property int plusLifeNum: 2
     property int acclerateNum: 2
     property int foodNumber: 5
     property int brickNumber: 8
+    property int colorAllergyNum: 3
     property int players: 1
     property bool running: true
     property bool editMode: false
@@ -146,6 +148,10 @@ Item {
         for (i = 0; i < brickNumber; i++) {
             randomlyGenerateItem(brickComponent)
         }
+        // generate color allergy food
+        for (i = 0; i < colorAllergyNum; i++) {
+            randomlyGenerateItem(colorAllergyComponent)
+        }
     }
     onRunningChanged: {
         for (var i = 0; i < players; i++) {
@@ -176,5 +182,6 @@ Item {
         accelerateComponent = Qt.createComponent("Accelerate.qml")
         foodComponent = Qt.createComponent("Food.qml")
         brickComponent = Qt.createComponent("Brick.qml")
+        colorAllergyComponent = Qt.createComponent("ColorAllergy.qml")
     }
 }

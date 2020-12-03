@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 
 Item {
-    id: snakePart
+    id: snakeBody
     property real atomSize
     property color color
     property real partSize
@@ -13,7 +13,7 @@ Item {
         id: effect
         anchors.fill: part
         spread: 0.4
-        color: snakePart.color
+        color: snakeBody.color
         cornerRadius: part.radius + glowRadius
         SequentialAnimation on glowRadius {
             NumberAnimation {
@@ -42,7 +42,7 @@ Item {
         radius: height / 2
         color: "#212121"
         border {
-            color: snakePart.color
+            color: snakeBody.color
             width: 2
         }
         x: (atomSize - partSize) / 2
@@ -68,7 +68,7 @@ Item {
         duration: 300
         onRunningChanged: {
             if (running === false)
-                snakePart.destroy()
+                snakeBody.destroy()
         }
     }
 }
