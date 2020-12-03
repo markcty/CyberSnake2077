@@ -6,6 +6,7 @@ import QtQuick.Layouts 1.3
 Item {
     id: snake
     anchors.fill: parent
+    property string name: "snake"
 
     property var snakeBody: []
     property var snakePartComponent
@@ -75,34 +76,34 @@ Item {
         var next = gameBoard.board[i][j]
         if (next) {
             // detect food-plus-one-life
-            if (next instanceof PlusLife) {
+            if (next.name === "plusLife") {
                 snake.lifes++
                 next.destroy()
                 gameBoard.board[i][j] = null
                 gameBoard.randomlyGenerateItem(gameBoard.plusLifeComponent)
-            } // detect accelrate food
-            else if (next instanceof Accelerate) {
-                moveTimer.accelerate()
-                next.destroy()
-                gameBoard.board[i][j] = null
-                gameBoard.randomlyGenerateItem(gameBoard.accelerateComponent)
+            } // detect brick
+            else if (next.name === "brick") {
+                rebirth()
+                return
             } // detect normal food
-            else if (next instanceof Food) {
+            else if (next.name === "food") {
                 longer = true
                 next.destroy()
                 gameBoard.board[i][j] = null
                 gameBoard.randomlyGenerateItem(gameBoard.foodComponent)
                 moveTimer.speed -= 20
+            } // detect accelrate food
+            else if (next.name === "accelerate") {
+                moveTimer.accelerate()
+                next.destroy()
+                gameBoard.board[i][j] = null
+                gameBoard.randomlyGenerateItem(gameBoard.accelerateComponent)
             } // detect other snake
-            else if (next instanceof Snake) {
+            else if (next.name === "snake") {
                 next.rebirth()
                 // eat the snake itself
                 if (next === snake)
                     return
-            } // detect brick
-            else if (next instanceof Brick) {
-                rebirth()
-                return
             }
         }
         // delete the tail

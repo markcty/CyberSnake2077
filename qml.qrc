@@ -12,5 +12,6 @@
         <file>apple.svg</file>
         <file>Food.qml</file>
         <file>Brick.qml</file>
+        <file>MapItem.qml</file>
     </qresource>
 </RCC>

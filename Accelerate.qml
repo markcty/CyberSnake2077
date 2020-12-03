@@ -5,12 +5,9 @@ import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import QtQuick.Shapes 1.12
 
-Item {
+MapItem {
     id: accelerate
-    property int atomSize: 30
-    width: atomSize
-    height: atomSize
-    property var gameBoard
+    property string name: "accelerate"
     RectangularGlow {
         id: effect
         anchors.fill: rect
@@ -148,61 +145,5 @@ Item {
                 to: 0
             }
         }
-    }
-
-    // drag
-    property point beginPos
-    property bool dragEnabled: false
-    Drag.active: dragArea.drag.active
-    MouseArea {
-        id: dragArea
-        enabled: dragEnabled
-        anchors.fill: parent
-        drag.target: parent
-        onReleased: {
-            var nextX = Math.floor(accelerate.x / atomSize) * atomSize
-            var nextY = Math.floor(accelerate.y / atomSize) * atomSize
-            var nextI = nextY / atomSize
-            var nextJ = nextX / atomSize
-            if (nextI < 0 || nextJ < 0 || nextI >= gameBoard.board.length
-                    || nextJ >= gameBoard.board.length) {
-                // delete the object
-                gameBoard.board[beginPos.y / atomSize][beginPos.x / atomSize] = null
-                accelerate.destroy()
-            } else if (gameBoard.board[nextI][nextJ]) {
-                backAnimX.to = beginPos.x
-                backAnimY.to = beginPos.y
-                backAnim.start()
-            } else {
-                console.log(beginPos.y, beginPos.x)
-                gameBoard.board[beginPos.y / atomSize][beginPos.x / atomSize] = null
-                accelerate.x = nextX
-                accelerate.y = nextY
-                gameBoard.board[nextI][nextJ] = accelerate
-                beginPos = Qt.point(accelerate.x, accelerate.y)
-            }
-        }
-    }
-    ParallelAnimation {
-        id: backAnim
-        SpringAnimation {
-            id: backAnimX
-            target: accelerate
-            property: "x"
-            duration: 500
-            spring: 2
-            damping: 0.2
-        }
-        SpringAnimation {
-            id: backAnimY
-            target: accelerate
-            property: "y"
-            duration: 500
-            spring: 2
-            damping: 0.2
-        }
-    }
-    Component.onCompleted: {
-        beginPos = Qt.point(accelerate.x, accelerate.y)
     }
 }
