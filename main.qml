@@ -12,6 +12,7 @@ Window {
     color: "#272528"
     title: qsTr("Snake Game")
     Material.theme: Material.Dark
+    Material.accent: '#795548'
 
     GridLayout {
         id: gridLayout
@@ -27,17 +28,22 @@ Window {
             Layout.preferredWidth: 300
             Layout.preferredHeight: 500
             Button {
-                id: startButton
-                text: qsTr(gridLayout.gameBoard ? "Restart" : "Start")
+                id: newBoardButton
+                text: qsTr("new Board")
                 Layout.rightMargin: 0
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 onClicked: {
-                    if (gridLayout.gameBoard)
-                        gridLayout.gameBoard.destroy()
+                    gridLayout.gameBoard.destroy()
                     gridLayout.gameBoard = gridLayout.gameBoardComponent.createObject(
                                 col2)
-                    gridLayout.gameBoard.focus = true
-                    gridLayout.gameBoard.startGame()
+                }
+            }
+            Button {
+                id: runningButton
+                text: qsTr(gridLayout.gameBoard.running ? "Pause" : "Start")
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                onClicked: {
+                    gridLayout.gameBoard.running = !gridLayout.gameBoard.running
                 }
             }
             Button {
@@ -45,40 +51,6 @@ Window {
                 text: qsTr("Quit")
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 onClicked: Qt.quit()
-            }
-            Button {
-                id: pauseButton
-                visible: gridLayout.gameBoard ? true : false
-                text: qsTr(!gridLayout.gameBoard
-                           || !gridLayout.gameBoard.running ? "Conitinue" : "Pause")
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                onClicked: {
-                    gridLayout.gameBoard.running = !gridLayout.gameBoard.running
-                }
-            }
-            Button {
-                id: editMapButton
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                visible: {
-                    if (!gridLayout.gameBoard)
-                        return false
-                    if (!gridLayout.gameBoard.running)
-                        return true
-                    return false
-                }
-                text: qsTr(gridLayout.gameBoard
-                           && gridLayout.gameBoard.editMode ? "Finish" : "Edit Map")
-                onClicked: {
-                    gridLayout.gameBoard.editMode = !gridLayout.gameBoard.editMode
-                    var t = gridLayout.gameBoard.editMode
-                    pauseButton.enabled = !t
-                    startButton.enabled = !t
-
-                    addFoodButton.visible = t
-                    addAccelerateButton.visible = t
-                    addPlusLifeButton.visible = t
-                    addBrickButton.visible = t
-                }
             }
         }
 
@@ -93,6 +65,25 @@ Window {
             id: col3
             Layout.preferredHeight: 300
             Layout.preferredWidth: 300
+            Button {
+                id: editMapButton
+                highlighted: true
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                enabled: gridLayout.gameBoard.running ? false : true
+                text: qsTr(gridLayout.gameBoard
+                           && gridLayout.gameBoard.editMode ? "Finish" : "Edit Map")
+                onClicked: {
+                    gridLayout.gameBoard.editMode = !gridLayout.gameBoard.editMode
+                    var t = gridLayout.gameBoard.editMode
+                    runningButton.enabled = !t
+                    addFoodButton.visible = t
+                    addAccelerateButton.visible = t
+                    addPlusLifeButton.visible = t
+                    addBrickButton.visible = t
+                    addColorAllergyButton.visible = t
+                    newBoardButton.enabled = !t
+                }
+            }
             Button {
                 id: addFoodButton
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
@@ -133,10 +124,22 @@ Window {
                                 gridLayout.gameBoard.brickComponent)
                 }
             }
+            Button {
+                id: addColorAllergyButton
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                visible: false
+                text: qsTr("Color Allergy")
+                onClicked: {
+                    gridLayout.gameBoard.randomlyGenerateItem(
+                                gridLayout.gameBoard.colorAllergyComponent)
+                }
+            }
         }
 
         Component.onCompleted: {
             gameBoardComponent = Qt.createComponent("GameBoard.qml")
+            gridLayout.gameBoard = gridLayout.gameBoardComponent.createObject(
+                        col2)
         }
     }
 }

@@ -6,22 +6,17 @@ MapItem {
     property var colors: ['orange', '#2e91ed']
     property string name: "colorAllergy"
     property color color: colors[Math.floor(Math.random() * 2)]
-    RadialGradient {
-        id: gradient
-        anchors.fill: parent
-        gradient: Gradient {
-            GradientStop {
-                position: 0.0
-                color: colorAllergy.color
-            }
-            GradientStop {
-                position: 0.5
-                color: "#212121"
-            }
-        }
+
+    RectangularGlow {
+        id: effect
+        anchors.fill: rect
+        glowRadius: 3
+        spread: 0.2
+        color: colorAllergy.color
+        cornerRadius: atomSize * 0.6 + glowRadius
         SequentialAnimation on opacity {
             loops: Animation.Infinite
-
+            running: true
             NumberAnimation {
                 from: 0.5
                 to: 1
@@ -35,5 +30,14 @@ MapItem {
                 easing.type: Easing.InOutQuad
             }
         }
+    }
+
+    Rectangle {
+        id: rect
+        anchors.centerIn: parent
+        width: atomSize * 0.5
+        height: atomSize * 0.5
+        radius: height / 2
+        color: colorAllergy.color
     }
 }

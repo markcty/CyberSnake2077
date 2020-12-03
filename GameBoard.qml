@@ -25,7 +25,7 @@ Item {
     property int brickNumber: 8
     property int colorAllergyNum: 3
     property int players: 1
-    property bool running: true
+    property bool running: false
     property bool editMode: false
     readonly property var snakeColor: ['orange', '#2e91ed']
 
@@ -85,7 +85,7 @@ Item {
     }
 
     function startGame() {
-        initBoard()
+
         for (var i = 0; i < snakes.length; i++)
             snakes[i].startMove()
     }
@@ -167,10 +167,7 @@ Item {
             for (var j = 0; j < size; j++) {
                 if (!board[i][j])
                     continue
-                if (board[i][j] instanceof Food
-                        || board[i][j] instanceof Accelerate
-                        || board[i][j] instanceof PlusLife
-                        || board[i][j] instanceof Brick) {
+                if (board[i][j].name !== "snake") {
                     board[i][j].dragEnabled = editMode
                 }
             }
@@ -183,5 +180,6 @@ Item {
         foodComponent = Qt.createComponent("Food.qml")
         brickComponent = Qt.createComponent("Brick.qml")
         colorAllergyComponent = Qt.createComponent("ColorAllergy.qml")
+        initBoard()
     }
 }
