@@ -3,9 +3,9 @@ import QtGraphicalEffects 1.0
 
 MapItem {
     id: colorAllergy
-    property var colors: ['orange', '#2e91ed']
+    property var colors: ['#ff3b94', '#4CAF50', '#2e91ed', 'orange']
     property string name: "colorAllergy"
-    property color color: colors[Math.floor(Math.random() * 2)]
+    property color color: colors[Math.floor(Math.random() * colors.length)]
 
     RectangularGlow {
         id: effect

@@ -17,7 +17,7 @@ Item {
     property var gameBoard
     property int lifes: 3
     property int defaultLength: 5
-    property bool autoMove: true
+    property bool autoMove: false
 
     Component.onCompleted: {
         snakeBodyComponent = Qt.createComponent("SnakeBody.qml")
@@ -154,10 +154,10 @@ Item {
         function isFood(item) {
             if (!item)
                 return false
-            if (item.name === "accelerate" || item.name === "food"
-                    || item.name === "plusLife"
-                    || (item.name === "colorAllergy"
-                        && item.color === snake.color))
+            if (item.name === "accelerate" || item.name === "food" || item.name
+                    === "plusLife" || (item.name === "colorAllergy" && item.color
+                                       === snake.color) || (item.name === "snake" && item
+                                                            !== snake))
                 return true
             return false
         }
@@ -337,7 +337,6 @@ Item {
         acclerateTimer.stop()
         moveTimer.speed = 400
     }
-
     Timer {
         id: moveTimer
         repeat: true
@@ -348,7 +347,7 @@ Item {
         }
         onSpeedChanged: {
             if (speed < 200)
-                speed = 100
+                speed = 200
             if (!acclerateTimer.running) {
                 interval = speed
             }

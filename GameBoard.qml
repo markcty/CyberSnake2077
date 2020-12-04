@@ -24,10 +24,11 @@ Item {
     property int foodNumber: 5
     property int brickNumber: 8
     property int colorAllergyNum: 3
-    property int players: 1
+    property int players: 0
+    property int aiSnakes: 0
     property bool running: false
     property bool editMode: false
-    readonly property var snakeColor: ['orange', '#2e91ed']
+    readonly property var snakeColor: ['#ff3b94', '#4CAF50', '#2e91ed', 'orange']
 
     RectangularGlow {
         id: canvasGlow
@@ -48,8 +49,7 @@ Item {
     }
 
     Keys.onPressed: {
-        // to-do: user input stack
-        if (snakes[0]) {
+        if (snakes[0] && snakes[0].name) {
             switch (event.key) {
             case Qt.Key_W:
                 snakes[0].inputStack.push("up")
@@ -65,7 +65,7 @@ Item {
                 break
             }
         }
-        if (snakes[1]) {
+        if (snakes[1] && snakes[1].name) {
             switch (event.key) {
             case Qt.Key_I:
                 snakes[1].inputStack.push("up")
@@ -125,13 +125,13 @@ Item {
         }
         // create snakes
         for (i = 0; i < players; i++) {
-            snakes[i] = snakeComponent.createObject(canvas, {
-                                                        "direction": "right",
-                                                        "atomSize": atomSize,
-                                                        "color": snakeColor[i],
-                                                        "gameBoard": gameBoard
-                                                    })
+            createSnake(false, i)
         }
+        // create ai snakes
+        for (i = 2; i < 2 + aiSnakes; i++) {
+            createSnake(true, i)
+        }
+
         // create plus one life food
         for (i = 0; i < plusLifeNum; i++) {
             randomlyGenerateItem(plusLifeComponent)
@@ -154,13 +154,14 @@ Item {
         }
     }
     onRunningChanged: {
-        for (var i = 0; i < players; i++) {
-            if (running) {
-                snakes[i].startMove()
-                focus = true
-            } else
-                snakes[i].stopMove()
-        }
+        for (var i = 0; i < 4; i++)
+            if (snakes[i] && snakes[i].name) {
+                if (running) {
+                    snakes[i].startMove()
+                    focus = true
+                } else
+                    snakes[i].stopMove()
+            }
     }
     onEditModeChanged: {
         for (var i = 0; i < size; i++)
@@ -171,6 +172,23 @@ Item {
                     board[i][j].dragEnabled = editMode
                 }
             }
+    }
+    function createSnake(auto, i) {
+        snakes[i] = snakeComponent.createObject(canvas, {
+                                                    "direction": "right",
+                                                    "atomSize": atomSize,
+                                                    "color": snakeColor[i],
+                                                    "gameBoard": gameBoard,
+                                                    "autoMove": auto
+                                                })
+    }
+    function addPlayer() {
+        players++
+        createSnake(false, players - 1)
+    }
+    function addAiSnake() {
+        aiSnakes++
+        createSnake(true, 2 + aiSnakes - 1)
     }
 
     Component.onCompleted: {

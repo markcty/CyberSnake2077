@@ -30,12 +30,41 @@ Window {
             Button {
                 id: newBoardButton
                 text: qsTr("new Board")
-                Layout.rightMargin: 0
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 onClicked: {
                     gridLayout.gameBoard.destroy()
                     gridLayout.gameBoard = gridLayout.gameBoardComponent.createObject(
                                 col2)
+                    newPlayerButton.enabled = true
+                    newAiSnakeButton.enabled = true
+                }
+                onEnabledChanged: {
+                    if (gridLayout.gameBoard.players === 2)
+                        enabled = false
+                }
+            }
+            Button {
+                id: newPlayerButton
+                text: qsTr("new Player")
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                onClicked: {
+                    gridLayout.gameBoard.addPlayer()
+                    if (gridLayout.gameBoard.players === 2)
+                        newPlayerButton.enabled = false
+                }
+                onEnabledChanged: {
+                    if (gridLayout.gameBoard.players === 2)
+                        enabled = false
+                }
+            }
+            Button {
+                id: newAiSnakeButton
+                text: qsTr("new AI Snake")
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                onClicked: {
+                    gridLayout.gameBoard.addAiSnake()
+                    if (gridLayout.gameBoard.aiSnakes === 2)
+                        newAiSnakeButton.enabled = false
                 }
             }
             Button {
@@ -44,6 +73,8 @@ Window {
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 onClicked: {
                     gridLayout.gameBoard.running = !gridLayout.gameBoard.running
+                    newPlayerButton.enabled = !gridLayout.gameBoard.running
+                    newAiSnakeButton.enabled = !gridLayout.gameBoard.running
                 }
             }
             Button {
