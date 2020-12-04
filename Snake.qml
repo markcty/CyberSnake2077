@@ -17,6 +17,7 @@ Item {
     property var gameBoard
     property int lifes: 3
     property int defaultLength: 5
+    property bool autoMove: true
 
     Component.onCompleted: {
         snakeBodyComponent = Qt.createComponent("SnakeBody.qml")
@@ -25,9 +26,10 @@ Item {
 
     function move() {
         var i, j, longer
-        // caculate next position
-        let dx = 0, dy = 0
-        if (inputStack.length) {
+        // change direction
+        if (autoMove) {
+            autoChangeDirection()
+        } else if (inputStack.length) {
             let nextDirection = inputStack.shift()
             switch (direction) {
             case "up":
@@ -48,6 +50,8 @@ Item {
                 break
             }
         }
+        // caculate next position
+        let dx = 0, dy = 0
         switch (direction) {
         case "up":
             dy = -atomSize
@@ -140,6 +144,134 @@ Item {
         }
     }
 
+    function autoChangeDirection() {
+        let board = gameBoard.board
+        let size = board.length
+        // search the nearest food
+        let curJ = snakeBody[snakeBody.length - 1].x / atomSize
+        let curI = snakeBody[snakeBody.length - 1].y / atomSize
+
+        function isFood(item) {
+            if (!item)
+                return false
+            if (item.name === "accelerate" || item.name === "food"
+                    || item.name === "plusLife"
+                    || (item.name === "colorAllergy"
+                        && item.color === snake.color))
+                return true
+            return false
+        }
+        function findNearestFood() {
+            var i, j, k
+            for (k = 1; k < size; k++) {
+                // up
+                if (curI - k > 0) {
+                    for (j = curJ - k; j <= curJ + k; j++)
+                        if (j >= 0 && j < size && isFood(board[curI - k][j]))
+                            return {
+                                "i": curI - k,
+                                "j": j
+                            }
+                }
+                // left
+                if (curJ - k > 0) {
+                    for (i = curI - k; i <= curI + k; i++)
+                        if (i >= 0 && i < size && isFood(board[i][curJ - k]))
+                            return {
+                                "i": i,
+                                "j": curJ - k
+                            }
+                }
+                // down
+                if (curI + k < size) {
+                    for (j = curJ - k; j <= curJ + k; j++)
+                        if (j >= 0 && j < size && isFood(board[curI + k][j]))
+                            return {
+                                "i": curI + k,
+                                "j": j
+                            }
+                }
+                // right
+                if (curJ + k < size) {
+                    for (i = curI - k; i <= curI + k; i++)
+                        if (i >= 0 && i < size && isFood(board[i][curJ + k]))
+                            return {
+                                "i": i,
+                                "j": curJ + k
+                            }
+                }
+            }
+        }
+        function distance(i0, j0, i1, j1) {
+            return Math.abs(i0 - i1) + Math.abs(j0 - j1)
+        }
+
+        var nearestFood = findNearestFood()
+        // return the score of position <i,j>
+        function tryPos(i, j) {
+            // out of border
+            if (i < 0 || i >= size || j < 0 || j >= size)
+                return -1
+            let item = board[i][j], score = 0
+            if (item) {
+                // smash to brick
+                if (item.name === "brick" || (item.name === "colorAllergy"
+                                              && item.color !== snake.color))
+                    return -1
+                // smash to itself
+                if (item === snake)
+                    return -1
+                // food
+                score += 8
+            }
+            // if the next move brings food closer then score + 5
+            if (distance(curI, curJ, nearestFood.i,
+                         nearestFood.j) > distance(i, j, nearestFood.i,
+                                                   nearestFood.j))
+                score += 5
+            else
+                score += 3
+            // if the next move can kill another snake
+            if (item && item.name === "snake")
+                score += 10
+            return score
+        }
+        let min = -2, score, nextDirection
+        // left
+        if (direction !== "right") {
+            score = tryPos(curI, curJ - 1)
+            if (score > min) {
+                nextDirection = "left"
+                min = score
+            }
+        }
+        // right
+        if (direction !== "left") {
+            score = tryPos(curI, curJ + 1)
+            if (score > min) {
+                nextDirection = "right"
+                min = score
+            }
+        }
+        // up
+        if (direction !== "down") {
+            score = tryPos(curI - 1, curJ)
+            if (score > min) {
+                nextDirection = "up"
+                min = score
+            }
+        }
+        // down
+        if (direction !== "up") {
+            score = tryPos(curI + 1, curJ)
+            if (score > min) {
+                nextDirection = "down"
+                min = score
+            }
+        }
+        direction = nextDirection
+    }
+
     function createSnake() {
         snakeBody = []
         // randomly find place to generate the snake
@@ -179,11 +311,12 @@ Item {
     }
 
     function startMove() {
+        inputStack = []
         moveTimer.start()
     }
+
     function stopMove() {
         moveTimer.stop()
-        inputStack = []
     }
 
     function rebirth() {
@@ -200,10 +333,9 @@ Item {
         inputStack = []
         createSnake()
         direction = "right"
-        moveTimer.speed = 400
         moveTimer.stop()
         acclerateTimer.stop()
-        rebirthTimer.start()
+        moveTimer.speed = 400
     }
 
     Timer {
@@ -215,7 +347,7 @@ Item {
             snake.move()
         }
         onSpeedChanged: {
-            if (speed < 100)
+            if (speed < 200)
                 speed = 100
             if (!acclerateTimer.running) {
                 interval = speed
@@ -233,17 +365,6 @@ Item {
         interval: 5000
         onTriggered: {
             moveTimer.interval = moveTimer.speed
-        }
-    }
-
-    Timer {
-        id: rebirthTimer
-        running: false
-        repeat: false
-        interval: 3000
-        onTriggered: {
-            if (gameBoard.running)
-                snake.startMove()
         }
     }
 
@@ -266,6 +387,10 @@ Item {
             from: 0
             to: 1
             easing.type: Easing.InOutQuad
+        }
+        onRunningChanged: {
+            if (gameBoard.running)
+                snake.startMove()
         }
     }
 }

@@ -14,3 +14,19 @@ HW for SEP Project
 - [ ] special food 3
 - [x] map editor
 - [ ] ai snake
+
+## Ai
+
+priority mode
+
+1. don't die
+
+   1. don't byte itself
+
+   2. ###### don't smash on the wall
+
+   3. don't eat allergy food
+
+2. go to the nearest food
+
+3. 
