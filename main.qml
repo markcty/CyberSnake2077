@@ -150,16 +150,6 @@ Window {
                 }
             }
             Button {
-                id: addBrickButton
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                visible: false
-                text: qsTr("Brick")
-                onClicked: {
-                    gridLayout.gameBoard.randomlyGenerateItem(
-                                gridLayout.gameBoard.brickComponent)
-                }
-            }
-            Button {
                 id: addColorAllergyButton
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 visible: false
@@ -167,6 +157,16 @@ Window {
                 onClicked: {
                     gridLayout.gameBoard.randomlyGenerateItem(
                                 gridLayout.gameBoard.colorAllergyComponent)
+                }
+            }
+            Button {
+                id: addBrickButton
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                visible: false
+                text: qsTr("Brick")
+                onClicked: {
+                    gridLayout.gameBoard.randomlyGenerateItem(
+                                gridLayout.gameBoard.brickComponent)
                 }
             }
         }
