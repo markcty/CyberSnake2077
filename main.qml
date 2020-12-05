@@ -12,7 +12,6 @@ Window {
     color: "#272528"
     title: qsTr("Snake Game")
     Material.theme: Material.Dark
-    Material.accent: '#795548'
 
     GridLayout {
         id: gridLayout
@@ -37,11 +36,9 @@ Window {
                                 col2)
                     newPlayerButton.enabled = true
                     newAiSnakeButton.enabled = true
+                    runningButton.enabled = false
                 }
-                onEnabledChanged: {
-                    if (gridLayout.gameBoard.players === 2)
-                        enabled = false
-                }
+                Material.background: '#4CAF50'
             }
             Button {
                 id: newPlayerButton
@@ -57,6 +54,7 @@ Window {
                     if (gridLayout.gameBoard.players === 2)
                         enabled = false
                 }
+                Material.background: '#009688'
             }
             Button {
                 id: newAiSnakeButton
@@ -68,6 +66,7 @@ Window {
                         newAiSnakeButton.enabled = false
                     runningButton.enabled = true
                 }
+                Material.background: '#009688'
             }
             Button {
                 id: runningButton
@@ -79,12 +78,14 @@ Window {
                     newPlayerButton.enabled = !gridLayout.gameBoard.running
                     newAiSnakeButton.enabled = !gridLayout.gameBoard.running
                 }
+                Material.background: '#E91E63'
             }
             Button {
                 id: quitButton
                 text: qsTr("Quit")
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 onClicked: Qt.quit()
+                Material.background: '#607D8B'
             }
         }
 
@@ -101,7 +102,6 @@ Window {
             Layout.preferredWidth: 300
             Button {
                 id: editMapButton
-                highlighted: true
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 enabled: gridLayout.gameBoard.running ? false : true
                 text: qsTr(gridLayout.gameBoard
@@ -117,6 +117,7 @@ Window {
                     addColorAllergyButton.visible = t
                     newBoardButton.enabled = !t
                 }
+                Material.background: '#795548'
             }
             Button {
                 id: addFoodButton

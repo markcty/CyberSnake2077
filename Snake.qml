@@ -16,7 +16,7 @@ Item {
     property real atomSize: 26
     property color color
     property var gameBoard
-    property int lifes: 3
+    property int lifes: 2
     property int defaultLength: 5
     property bool autoMove: false
     property bool invinicible: false

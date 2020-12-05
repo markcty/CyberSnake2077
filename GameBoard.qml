@@ -30,13 +30,13 @@ Item {
         "score": 0,
         "i": 0
     }
-    readonly property var snakeColor: ['#2e91ed', 'orange', '#ff3b94', '#4CAF50']
+    readonly property var snakeColor: ['#03A9F4', '#FF5722', '#4CAF50', '#FFEB3B']
     RectangularGlow {
         id: canvasGlow
         anchors.fill: canvas
         spread: 0.2
         glowRadius: 10
-        color: "#2e91ed"
+        color: "#03A9F4"
         cornerRadius: canvas.radius + glowRadius
         Behavior on color {
             ColorAnimation {
@@ -234,6 +234,7 @@ Item {
                                                     "scoreBoard": scoreBoard
                                                 })
         scoreBoard.activated = true
+        scoreBoard.lifes = snakes[i].lifes
     }
     function addPlayer() {
         players++

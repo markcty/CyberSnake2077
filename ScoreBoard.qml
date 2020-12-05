@@ -46,11 +46,12 @@ Item {
         if (activated)
             fadeIn.start()
         else
-            text.x = 30
+            text.x = 50
     }
     Behavior on score {
         NumberAnimation {
             duration: 500
         }
     }
+    onLifesChanged: activated = lifes !== 0
 }
