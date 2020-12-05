@@ -51,6 +51,7 @@ Window {
                     gridLayout.gameBoard.addPlayer()
                     if (gridLayout.gameBoard.players === 2)
                         newPlayerButton.enabled = false
+                    runningButton.enabled = true
                 }
                 onEnabledChanged: {
                     if (gridLayout.gameBoard.players === 2)
@@ -65,12 +66,14 @@ Window {
                     gridLayout.gameBoard.addAiSnake()
                     if (gridLayout.gameBoard.aiSnakes === 2)
                         newAiSnakeButton.enabled = false
+                    runningButton.enabled = true
                 }
             }
             Button {
                 id: runningButton
                 text: qsTr(gridLayout.gameBoard.running ? "Pause" : "Start")
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                enabled: false
                 onClicked: {
                     gridLayout.gameBoard.running = !gridLayout.gameBoard.running
                     newPlayerButton.enabled = !gridLayout.gameBoard.running
@@ -85,7 +88,7 @@ Window {
             }
         }
 
-        ColumnLayout {
+        Item {
             id: col2
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.preferredWidth: 1000

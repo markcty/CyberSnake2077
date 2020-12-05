@@ -10,6 +10,7 @@ Item {
 
     property var snakeBody: []
     property var snakeBodyComponent
+    property var scoreBoard
     property string direction
     property var inputStack: []
     property real atomSize: 26
@@ -98,6 +99,7 @@ Item {
                 gameBoard.board[i][j] = null
                 gameBoard.randomlyGenerateItem(gameBoard.foodComponent)
                 moveTimer.speed -= 20
+                scoreBoard.score += 5
             } // detect accelrate food
             else if (next.name === "accelerate") {
                 moveTimer.accelerate()
@@ -112,15 +114,19 @@ Item {
                 if (snake.color !== next.color) {
                     rebirth()
                     return
-                } else
+                } else {
                     longer = true
+                    scoreBoard.score += 8
+                }
             } // detect other snake
             else if (next.name === "snake") {
                 if (next.invinicible) {
                     rebirth()
                     return
-                } else
+                } else {
                     next.rebirth()
+                    scoreBoard.score += 8
+                }
                 // eat the snake itself
                 if (next === snake)
                     return
@@ -403,5 +409,8 @@ Item {
                 snake.startMove()
             invinicible = false
         }
+    }
+    onLifesChanged: {
+        scoreBoard.lifes = lifes
     }
 }

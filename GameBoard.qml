@@ -6,7 +6,7 @@ import QtGraphicalEffects 1.0
 
 Item {
     id: gameBoard
-    anchors.centerIn: parent
+    anchors.fill: parent
     property real atomSize: 30
     property var snakes: []
     property var snakeComponent
@@ -26,8 +26,11 @@ Item {
     property int aiSnakes: 0
     property bool running: false
     property bool editMode: false
-    readonly property var snakeColor: ['#ff3b94', '#4CAF50', '#2e91ed', 'orange']
-
+    property var winner: {
+        "score": 0,
+        "i": 0
+    }
+    readonly property var snakeColor: ['#2e91ed', 'orange', '#ff3b94', '#4CAF50']
     RectangularGlow {
         id: canvasGlow
         anchors.fill: canvas
@@ -35,8 +38,12 @@ Item {
         glowRadius: 10
         color: "#2e91ed"
         cornerRadius: canvas.radius + glowRadius
+        Behavior on color {
+            ColorAnimation {
+                duration: 500
+            }
+        }
     }
-
     Rectangle {
         id: canvas
         width: 720
@@ -46,6 +53,38 @@ Item {
         anchors.centerIn: parent
     }
 
+    Row {
+        anchors.bottom: canvas.top
+        anchors.horizontalCenter: canvas.horizontalCenter
+        anchors.bottomMargin: 25
+        spacing: 200
+        ScoreBoard {
+            id: score0
+            color: snakeColor[0]
+            onScoreChanged: gameBoard.updateWinner(score, 0)
+        }
+        ScoreBoard {
+            id: score1
+            color: snakeColor[1]
+            onScoreChanged: gameBoard.updateWinner(score, 1)
+        }
+    }
+    Row {
+        anchors.top: canvas.bottom
+        anchors.horizontalCenter: canvas.horizontalCenter
+        anchors.topMargin: 25
+        spacing: 200
+        ScoreBoard {
+            id: score2
+            color: snakeColor[2]
+            onScoreChanged: gameBoard.updateWinner(score, 2)
+        }
+        ScoreBoard {
+            id: score3
+            color: snakeColor[3]
+            onScoreChanged: gameBoard.updateWinner(score, 3)
+        }
+    }
     Keys.onPressed: {
         if (snakes[0] && snakes[0].name) {
             switch (event.key) {
@@ -129,7 +168,6 @@ Item {
         for (i = 2; i < 2 + aiSnakes; i++) {
             createSnake(true, i)
         }
-
         // create plus one life food
         for (i = 0; i < plusLifeNum; i++) {
             randomlyGenerateItem(plusLifeComponent)
@@ -172,13 +210,30 @@ Item {
             }
     }
     function createSnake(auto, i) {
+        var scoreBoard
+        switch (i) {
+        case 0:
+            scoreBoard = score0
+            break
+        case 1:
+            scoreBoard = score1
+            break
+        case 2:
+            scoreBoard = score2
+            break
+        case 3:
+            scoreBoard = score3
+            break
+        }
         snakes[i] = snakeComponent.createObject(canvas, {
                                                     "direction": "right",
                                                     "atomSize": atomSize,
                                                     "color": snakeColor[i],
                                                     "gameBoard": gameBoard,
-                                                    "autoMove": auto
+                                                    "autoMove": auto,
+                                                    "scoreBoard": scoreBoard
                                                 })
+        scoreBoard.activated = true
     }
     function addPlayer() {
         players++
@@ -187,6 +242,13 @@ Item {
     function addAiSnake() {
         aiSnakes++
         createSnake(true, 2 + aiSnakes - 1)
+    }
+    function updateWinner(score, i) {
+        if (score > winner.score) {
+            winner.score = score
+            winner.i = i
+            canvasGlow.color = snakeColor[winner.i]
+        }
     }
 
     Component.onCompleted: {

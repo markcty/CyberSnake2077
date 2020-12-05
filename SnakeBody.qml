@@ -9,6 +9,8 @@ Item {
     property real atomSize
     property color color
     property real partSize
+    width: atomSize
+    height: atomSize
     RectangularGlow {
         id: effect
         anchors.fill: part

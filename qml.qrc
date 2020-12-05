@@ -14,5 +14,6 @@
         <file>Brick.qml</file>
         <file>MapItem.qml</file>
         <file>ColorAllergy.qml</file>
+        <file>ScoreBoard.qml</file>
     </qresource>
 </RCC>
