@@ -18,6 +18,7 @@ Item {
     property int lifes: 3
     property int defaultLength: 5
     property bool autoMove: false
+    property bool invinicible: false
 
     Component.onCompleted: {
         snakeBodyComponent = Qt.createComponent("SnakeBody.qml")
@@ -81,7 +82,8 @@ Item {
         if (next) {
             // detect food-plus-one-life
             if (next.name === "plusLife") {
-                snake.lifes++
+                if (snake.lifes < 5)
+                    snake.lifes++
                 next.destroy()
                 gameBoard.board[i][j] = null
                 gameBoard.randomlyGenerateItem(gameBoard.plusLifeComponent)
@@ -114,7 +116,11 @@ Item {
                     longer = true
             } // detect other snake
             else if (next.name === "snake") {
-                next.rebirth()
+                if (next.invinicible) {
+                    rebirth()
+                    return
+                } else
+                    next.rebirth()
                 // eat the snake itself
                 if (next === snake)
                     return
@@ -157,7 +163,7 @@ Item {
             if (item.name === "accelerate" || item.name === "food" || item.name
                     === "plusLife" || (item.name === "colorAllergy" && item.color
                                        === snake.color) || (item.name === "snake" && item
-                                                            !== snake))
+                                                            !== snake && !item.invinicible))
                 return true
             return false
         }
@@ -221,19 +227,23 @@ Item {
                 // smash to itself
                 if (item === snake)
                     return -1
+                if (item.name === "snake") {
+                    // smash to an invinicible snake
+                    if (item.invinicible)
+                        return -1
+                    // if the next move can kill another snake
+                    score += 10
+                }
                 // food
                 score += 8
             }
-            // if the next move brings food closer then score + 5
+            // if the next move brings food or another snake closer then score + 5
             if (distance(curI, curJ, nearestFood.i,
                          nearestFood.j) > distance(i, j, nearestFood.i,
                                                    nearestFood.j))
                 score += 5
             else
                 score += 3
-            // if the next move can kill another snake
-            if (item && item.name === "snake")
-                score += 10
             return score
         }
         let min = -2, score, nextDirection
@@ -330,6 +340,7 @@ Item {
             snakeBody[i].startDestroy()
         }
         // init the new snake
+        invinicible = true
         inputStack = []
         createSnake()
         direction = "right"
@@ -390,6 +401,7 @@ Item {
         onRunningChanged: {
             if (gameBoard.running)
                 snake.startMove()
+            invinicible = false
         }
     }
 }

@@ -6,9 +6,7 @@ import QtGraphicalEffects 1.0
 
 Item {
     id: gameBoard
-    width: 900
-    height: width
-    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+    anchors.centerIn: parent
     property real atomSize: 30
     property var snakes: []
     property var snakeComponent
