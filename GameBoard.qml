@@ -36,12 +36,18 @@ Item {
         anchors.fill: canvas
         spread: 0.2
         glowRadius: 10
+        opacity: 0
         color: "#03A9F4"
         cornerRadius: canvas.radius + glowRadius
         Behavior on color {
             ColorAnimation {
                 duration: 500
             }
+        }
+        OpacityAnimator on opacity {
+            from: 0
+            to: 1
+            duration: 1000
         }
     }
     Rectangle {

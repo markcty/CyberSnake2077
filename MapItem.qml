@@ -6,12 +6,11 @@ import QtGraphicalEffects 1.0
 
 Item {
     id: mapItem
-
     property real atomSize: 30
     property var gameBoard
     width: atomSize
     height: atomSize
-
+    opacity: 0
     property point beginPos
     property bool dragEnabled: false
     Drag.active: dragArea.drag.active
@@ -66,5 +65,10 @@ Item {
     }
     Component.onCompleted: {
         beginPos = Qt.point(mapItem.x, mapItem.y)
+    }
+    OpacityAnimator on opacity {
+        from: 0
+        to: 1
+        duration: 1000
     }
 }
