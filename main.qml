@@ -27,13 +27,14 @@ Window {
             Layout.preferredWidth: 300
             Layout.preferredHeight: 500
             Button {
-                id: newBoardButton
-                text: qsTr("new Board")
+                id: newGameButton
+                text: qsTr("new Game")
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 onClicked: {
                     gridLayout.gameBoard.destroy()
                     gridLayout.gameBoard = gridLayout.gameBoardComponent.createObject(
                                 col2)
+                    gridLayout.gameBoard.randomlyGenerateBoard()
                     newPlayerButton.enabled = true
                     newAiSnakeButton.enabled = true
                     runningButton.enabled = false
@@ -101,6 +102,37 @@ Window {
             Layout.preferredHeight: 300
             Layout.preferredWidth: 300
             Button {
+                id: loadBoardButton
+                text: qsTr("Load Game")
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Material.background: '#2196F3'
+                onClicked: {
+                    gridLayout.gameBoard.destroy()
+                    gridLayout.gameBoard = gridLayout.gameBoardComponent.createObject(
+                                col2)
+                    gridLayout.gameBoard.initFromFile()
+                    newPlayerButton.enabled = true
+                    newAiSnakeButton.enabled = true
+                    runningButton.enabled = false
+                }
+                Component.onCompleted: {
+                    var rawData = saveGame.getRawData()
+                    if (rawData === "")
+                        enabled = false
+                    else
+                        enabled = true
+                }
+            }
+            Button {
+                id: saveGameButton
+                text: qsTr("Save Game")
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Material.background: '#2196F3'
+                onClicked: {
+                    gridLayout.gameBoard.save()
+                }
+            }
+            Button {
                 id: editMapButton
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 enabled: gridLayout.gameBoard.running ? false : true
@@ -115,7 +147,7 @@ Window {
                     addPlusLifeButton.visible = t
                     addBrickButton.visible = t
                     addColorAllergyButton.visible = t
-                    newBoardButton.enabled = !t
+                    newGameButton.enabled = !t
                 }
                 Material.background: '#795548'
             }
@@ -175,6 +207,7 @@ Window {
             gameBoardComponent = Qt.createComponent("GameBoard.qml")
             gridLayout.gameBoard = gridLayout.gameBoardComponent.createObject(
                         col2)
+            gridLayout.gameBoard.randomlyGenerateBoard()
         }
     }
 }

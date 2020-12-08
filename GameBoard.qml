@@ -133,12 +133,13 @@ Item {
             snakes[i].startMove()
     }
 
-    function randomlyGenerateItem(foodComponent) {
-        for (var i = 0; i < 10; i++) {
+    function randomlyGenerateItem(itemComponent) {
+        // try 100 times to prevent infinite loop
+        for (var i = 0; i < 100; i++) {
             let x = Math.floor(Math.random() * size)
             let y = Math.floor(Math.random() * size)
             if (!board[y][x]) {
-                board[y][x] = foodComponent.createObject(canvas, {
+                board[y][x] = itemComponent.createObject(canvas, {
                                                              "atomSize": atomSize,
                                                              "x": x * atomSize,
                                                              "y": y * atomSize,
@@ -150,22 +151,17 @@ Item {
         }
     }
 
-    function initBoard() {
+    function generateItem(itemComponent, i, j) {
+        board[i][j] = itemComponent.createObject(canvas, {
+                                                     "atomSize": atomSize,
+                                                     "x": j * atomSize,
+                                                     "y": i * atomSize,
+                                                     "gameBoard": gameBoard,
+                                                     "dragEnabled": gameBoard.editMode
+                                                 })
+    }
+    function randomlyGenerateBoard() {
         var i, j
-        // init the board
-        if (board) {
-            for (i = 0; i < size; i++) {
-                for (j = 0; j < size; j++)
-                    if (board[i][j] && board[i][j].destroy)
-                        board[i][j].destroy()
-            }
-        }
-        board = new Array(canvas.height / atomSize)
-        for (i = 0; i < size; i++) {
-            board[i] = new Array(size)
-            for (j = 0; j < size; j++)
-                board[i][j] = null
-        }
         // create snakes
         for (i = 0; i < players; i++) {
             createSnake(false, i)
@@ -257,6 +253,58 @@ Item {
             canvasGlow.color = snakeColor[winner.i]
         }
     }
+    function initFromFile() {
+        var data = JSON.parse(saveGame.getRawData())
+        var i
+        for (i = 0; i < data.PlusLife.length; i++)
+            generateItem(plusLifeComponent, data.PlusLife[i].i,
+                         data.PlusLife[i].j)
+        for (i = 0; i < data.Accelerate.length; i++)
+            generateItem(accelerateComponent, data.Accelerate[i].i,
+                         data.Accelerate[i].j)
+        for (i = 0; i < data.Food.length; i++)
+            generateItem(foodComponent, data.Food[i].i, data.Food[i].j)
+        for (i = 0; i < data.Brick.length; i++)
+            generateItem(brickComponent, data.Brick[i].i, data.Brick[i].j)
+        for (i = 0; i < data.ColorAllergy.length; i++)
+            generateItem(colorAllergyComponent, data.ColorAllergy[i].i,
+                         data.ColorAllergy[i].j)
+    }
+    function save() {
+        var data = {
+            "PlusLife": [],
+            "Accelerate": [],
+            "Food": [],
+            "Brick": [],
+            "ColorAllergy": []
+        }
+        for (var i = 0; i < size; i++)
+            for (var j = 0; j < size; j++)
+                if (board[i][j]) {
+                    var pos = {
+                        "i": i,
+                        "j": j
+                    }
+                    switch (board[i][j].name) {
+                    case "plusLife":
+                        data.PlusLife.push(pos)
+                        break
+                    case "accelerate":
+                        data.Accelerate.push(pos)
+                        break
+                    case "food":
+                        data.Food.push(pos)
+                        break
+                    case "brick":
+                        data.Brick.push(pos)
+                        break
+                    case "colorAllergy":
+                        data.ColorAllergy.push(pos)
+                        break
+                    }
+                }
+        saveGame.saveData(JSON.stringify(data))
+    }
 
     Component.onCompleted: {
         snakeComponent = Qt.createComponent("Snake.qml")
@@ -265,6 +313,20 @@ Item {
         foodComponent = Qt.createComponent("Food.qml")
         brickComponent = Qt.createComponent("Brick.qml")
         colorAllergyComponent = Qt.createComponent("ColorAllergy.qml")
-        initBoard()
+        // init the board array
+        var i, j
+        if (board) {
+            for (i = 0; i < size; i++) {
+                for (j = 0; j < size; j++)
+                    if (board[i][j] && board[i][j].destroy)
+                        board[i][j].destroy()
+            }
+        }
+        board = new Array(canvas.height / atomSize)
+        for (i = 0; i < size; i++) {
+            board[i] = new Array(size)
+            for (j = 0; j < size; j++)
+                board[i][j] = null
+        }
     }
 }
