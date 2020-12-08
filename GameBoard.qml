@@ -274,7 +274,7 @@ Item {
         for (i = 0; i < data.ColorAllergy.length; i++)
             generateItem(colorAllergyComponent, data.ColorAllergy[i].i,
                          data.ColorAllergy[i].j)
-        for (i = 0; i < 3; i++)
+        for (i = 0; i < 4; i++)
             if (data.snakes[i]) {
                 createSnake(data.snakes[i].autoMove, i, data.snakes[i])
                 if (i < 2)

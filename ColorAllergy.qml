@@ -3,7 +3,7 @@ import QtGraphicalEffects 1.0
 
 MapItem {
     id: colorAllergy
-    property var colors: ['#ff3b94', '#4CAF50', '#2e91ed', 'orange']
+    property var colors: ['#03A9F4', '#FF5722', '#4CAF50', '#FFEB3B']
     property string name: "colorAllergy"
     property color color: colors[Math.floor(Math.random() * colors.length)]
 
