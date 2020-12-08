@@ -23,7 +23,6 @@ Item {
 
     Component.onCompleted: {
         snakeBodyComponent = Qt.createComponent("SnakeBody.qml")
-        createSnake()
     }
 
     function move() {
@@ -288,7 +287,7 @@ Item {
         direction = nextDirection
     }
 
-    function createSnake() {
+    function randomlyBirth() {
         snakeBody = []
         // randomly find place to generate the snake
         var boardSize = gameBoard.size, initI, initJ, i, j, tries = 10, ok = false
@@ -325,6 +324,22 @@ Item {
             snakeBody[i].partSize = atomSize * (size + delta * i)
         }
     }
+    function birthFromProfile(profile) {
+        profile.snakeBody.forEach(function (body) {
+            snakeBody.push(snakeBodyComponent.createObject(snake, {
+                                                               "x": body.j * atomSize,
+                                                               "y": body.i * atomSize,
+                                                               "atomSize": atomSize,
+                                                               "color": snake.color,
+                                                               "partSize": atomSize * 4 / 5
+                                                           }))
+            gameBoard.board[body.i][body.j] = snake
+        })
+        var size = 0.3, delta = (0.8 - 0.3) / snakeBody.length
+        for (var i = 0; i < snakeBody.length; i++) {
+            snakeBody[i].partSize = atomSize * (size + delta * i)
+        }
+    }
 
     function startMove() {
         inputStack = []
@@ -348,7 +363,7 @@ Item {
         // init the new snake
         invinicible = true
         inputStack = []
-        createSnake()
+        randomlyBirth()
         direction = "right"
         moveTimer.stop()
         acclerateTimer.stop()
@@ -383,7 +398,6 @@ Item {
             moveTimer.interval = moveTimer.speed
         }
     }
-
     SequentialAnimation {
         id: rebirthAnimation
         running: false

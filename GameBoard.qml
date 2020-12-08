@@ -164,11 +164,11 @@ Item {
         var i, j
         // create snakes
         for (i = 0; i < players; i++) {
-            createSnake(false, i)
+            createSnake(false, i, null)
         }
         // create ai snakes
         for (i = 2; i < 2 + aiSnakes; i++) {
-            createSnake(true, i)
+            createSnake(true, i, null)
         }
         // create plus one life food
         for (i = 0; i < plusLifeNum; i++) {
@@ -211,7 +211,7 @@ Item {
                 }
             }
     }
-    function createSnake(auto, i) {
+    function createSnake(autoMove, i, profile) {
         var scoreBoard
         switch (i) {
         case 0:
@@ -232,19 +232,24 @@ Item {
                                                     "atomSize": atomSize,
                                                     "color": snakeColor[i],
                                                     "gameBoard": gameBoard,
-                                                    "autoMove": auto,
+                                                    "autoMove": autoMove,
                                                     "scoreBoard": scoreBoard
                                                 })
+        if (profile) {
+            snakes[i].birthFromProfile(profile)
+        } else {
+            snakes[i].randomlyBirth()
+        }
         scoreBoard.activated = true
         scoreBoard.lifes = snakes[i].lifes
     }
     function addPlayer() {
         players++
-        createSnake(false, players - 1)
+        createSnake(false, players - 1, null)
     }
     function addAiSnake() {
         aiSnakes++
-        createSnake(true, 2 + aiSnakes - 1)
+        createSnake(true, 2 + aiSnakes - 1, null)
     }
     function updateWinner(score, i) {
         if (score > winner.score) {
@@ -269,6 +274,14 @@ Item {
         for (i = 0; i < data.ColorAllergy.length; i++)
             generateItem(colorAllergyComponent, data.ColorAllergy[i].i,
                          data.ColorAllergy[i].j)
+        for (i = 0; i < 3; i++)
+            if (data.snakes[i]) {
+                createSnake(data.snakes[i].autoMove, i, data.snakes[i])
+                if (i < 2)
+                    players++
+                else
+                    aiSnakes++
+            }
     }
     function save() {
         var data = {
@@ -276,7 +289,8 @@ Item {
             "Accelerate": [],
             "Food": [],
             "Brick": [],
-            "ColorAllergy": []
+            "ColorAllergy": [],
+            "snakes": []
         }
         for (var i = 0; i < size; i++)
             for (var j = 0; j < size; j++)
@@ -303,6 +317,20 @@ Item {
                         break
                     }
                 }
+        for (i = 0; i < 4; i++) {
+            if (snakes[i]) {
+                data.snakes[i] = {
+                    "snakeBody": [],
+                    "autoMove": snakes[i].autoMove
+                }
+                snakes[i].snakeBody.forEach(function (body) {
+                    data.snakes[i].snakeBody.push({
+                                                      "i": body.y / atomSize,
+                                                      "j": body.x / atomSize
+                                                  })
+                })
+            }
+        }
         saveGame.saveData(JSON.stringify(data))
     }
 

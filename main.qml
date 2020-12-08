@@ -76,8 +76,11 @@ Window {
                 enabled: false
                 onClicked: {
                     gridLayout.gameBoard.running = !gridLayout.gameBoard.running
-                    newPlayerButton.enabled = !gridLayout.gameBoard.running
-                    newAiSnakeButton.enabled = !gridLayout.gameBoard.running
+                    var t = gridLayout.gameBoard.running
+                    newPlayerButton.enabled = !t
+                    newAiSnakeButton.enabled = !t
+                    loadGameButton.enabled = !t
+                    saveGameButton.enabled = !t
                 }
                 Material.background: '#E91E63'
             }
@@ -102,7 +105,7 @@ Window {
             Layout.preferredHeight: 300
             Layout.preferredWidth: 300
             Button {
-                id: loadBoardButton
+                id: loadGameButton
                 text: qsTr("Load Game")
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 Material.background: '#2196F3'
@@ -111,9 +114,9 @@ Window {
                     gridLayout.gameBoard = gridLayout.gameBoardComponent.createObject(
                                 col2)
                     gridLayout.gameBoard.initFromFile()
-                    newPlayerButton.enabled = true
-                    newAiSnakeButton.enabled = true
-                    runningButton.enabled = false
+                    newPlayerButton.enabled = gridLayout.gameBoard.players !== 2 ? true : false
+                    newAiSnakeButton.enabled = gridLayout.gameBoard.aiSnakes !== 2 ? true : false
+                    runningButton.enabled = true
                 }
                 Component.onCompleted: {
                     var rawData = saveGame.getRawData()
@@ -130,6 +133,7 @@ Window {
                 Material.background: '#2196F3'
                 onClicked: {
                     gridLayout.gameBoard.save()
+                    loadGameButton.enabled = true
                 }
             }
             Button {
@@ -148,6 +152,8 @@ Window {
                     addBrickButton.visible = t
                     addColorAllergyButton.visible = t
                     newGameButton.enabled = !t
+                    saveGameButton.visible = !t
+                    loadGameButton.visible = !t
                 }
                 Material.background: '#795548'
             }
