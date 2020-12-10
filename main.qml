@@ -45,7 +45,7 @@ Window {
                 text: qsTr("new Player")
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 onClicked: {
-                    gridLayout.gameBoard.addPlayer()
+                    gridLayout.gameBoard.players++
                     if (gridLayout.gameBoard.players === 2)
                         newPlayerButton.enabled = false
                     runningButton.enabled = true
@@ -61,7 +61,7 @@ Window {
                 text: qsTr("new AI Snake")
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                 onClicked: {
-                    gridLayout.gameBoard.addAiSnake()
+                    gridLayout.gameBoard.aiSnakes++
                     if (gridLayout.gameBoard.aiSnakes === 2)
                         newAiSnakeButton.enabled = false
                     runningButton.enabled = true

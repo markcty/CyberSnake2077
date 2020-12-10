@@ -19,11 +19,11 @@ Item {
     property var brickComponent
     property var colorAllergyComponent
     // default numbers
-    property int plusLifeNum: 2
-    property int accelerateNum: 2
-    property int foodNum: 5
-    property int brickNum: 8
-    property int colorAllergyNum: 3
+    readonly property int plusLifeNum: 2
+    readonly property int accelerateNum: 2
+    readonly property int foodNum: 5
+    readonly property int brickNum: 8
+    readonly property int colorAllergyNum: 3
     readonly property var snakeColor: ['#03A9F4', '#FF5722', '#4CAF50', '#FFEB3B']
     // game status
     property int players: 0 // current player number
@@ -34,10 +34,15 @@ Item {
         "score": 0,
         "i": 0
     }
-    // private properties
+    // private
     QtObject {
         id: internal
         property var snakes: []
+        // create a snake
+        // autoMove: bool -> if the snake is an ai snake
+        // i: integer -> the index of the snake
+        // profile: objectRef -> if profile is null the snake should birth randomly on the board
+        //                       else birth on the board indicated by the profile
         function createSnake(autoMove, i, profile) {
             var scoreBoard, snakes = internal.snakes
             switch (i) {
@@ -246,18 +251,17 @@ Item {
                     aiSnakes++
             }
     }
-    // create a snake
-    // autoMove: bool -> if the snake is an ai snake
-    // i: integer -> the index of the snake
-    // profile: objectRef -> if profile is null the snake should birth randomly on the board
-    //                       else birth on the board indicated by the profile
-    function addPlayer() {
-        players++
-        internal.createSnake(false, players - 1, null)
+    onPlayersChanged: {
+        if (players <= 2)
+            internal.createSnake(false, players - 1, null)
+        else
+            players = 2
     }
-    function addAiSnake() {
-        aiSnakes++
-        internal.createSnake(true, 2 + aiSnakes - 1, null)
+    onAiSnakesChanged: {
+        if (aiSnakes <= 2)
+            internal.createSnake(true, 2 + aiSnakes - 1, null)
+        else
+            aiSnakes = 2
     }
     // update the winner and change the canvasGlow color to the winner's color
     function updateWinner(score, i) {
@@ -310,12 +314,7 @@ Item {
                     "snakeBody": [],
                     "autoMove": snakes[i].autoMove
                 }
-                snakes[i].snakeBody.forEach(function (body) {
-                    data.snakes[i].snakeBody.push({
-                                                      "i": body.y / atomSize,
-                                                      "j": body.x / atomSize
-                                                  })
-                })
+                data.snakes[i].snakeBody = snakes[i].saveSnake()
             }
         }
         saveGame.saveData(JSON.stringify(data))

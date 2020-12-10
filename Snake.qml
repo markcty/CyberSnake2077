@@ -15,7 +15,6 @@ Item {
     property var inputStack: []
     property real atomSize: 30
     property color color
-
     property bool autoMove: false
     property bool invincible: false
 
@@ -389,6 +388,17 @@ Item {
         moveTimer.stop()
         acclerateTimer.stop()
         moveTimer.speed = 400
+    }
+
+    function saveSnake() {
+        var ret = []
+        internal.snakeBody.forEach(function (body) {
+            ret.push({
+                         "i": body.y / atomSize,
+                         "j": body.x / atomSize
+                     })
+        })
+        return ret
     }
 
     Timer {
