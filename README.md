@@ -6,7 +6,7 @@
 - Minimalist Design
   - use circles to present a snake
   - use glow effect to give players  some atmosphere
-  - the glow around the game board indicates the winner
+  - the glow around the game board indicates the winner (cool)
 - Fully animated
   - Almost all objects has a fade in or fade out animation
   - When moving the food to a wrong position, the food will spring back to its original position
@@ -31,6 +31,16 @@ All food (including brick) inherit from class `MapItem`. `MapItem` implements th
 
 ### How is the AI Snake implemented?
 
+The mechanism of the AI Snake is simple. Every time the snake needs to move. It computes the score of every possible next move (3, actually) and choose the move with the highest score.
+
+The score of next move is computed as below
+
+- return -1 if next move kills the snake (smash to wall, brick or bite itself)
+- +3 if nothing happened
+- +5 if next move brings food closer
+- +8 if next move is food
+- +10 if next move can kill another snake
+
 
 
 
@@ -42,7 +52,7 @@ HW for SEP Project
 - [x] brick
 - [x] normal food
 - [x] pause
-- [ ] save game
+- [x] save game
 - [x] restart
 - [x] multiple players
 - [x] special food 1
@@ -50,19 +60,3 @@ HW for SEP Project
 - [x] special food 3
 - [x] map editor
 - [x] ai snake
-
-## Ai
-
-priority mode
-
-1. don't die
-
-   1. don't byte itself
-
-   2. don't smash on the wall
-
-   3. don't eat allergy food
-   
-   4. don't smash on the invincible
-
-2. go to the nearest food
