@@ -66,8 +66,6 @@ Item {
                 snakes[i].birthFromProfile(profile)
             else
                 snakes[i].randomlyBirth()
-            scoreBoard.activated = true
-            scoreBoard.lifes = snakes[i].lifes
         }
     }
     // board glow
