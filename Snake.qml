@@ -7,7 +7,6 @@ Item {
     id: snake
     anchors.fill: parent
     property string name: "snake"
-
     property var snakeBody: []
     property var snakeBodyComponent
     property var scoreBoard
@@ -290,10 +289,10 @@ Item {
     function randomlyBirth() {
         snakeBody = []
         // randomly find place to generate the snake
-        var boardSize = gameBoard.size, initI, initJ, i, j, tries = 10, ok = false
+        var size = board.length, initI, initJ, i, j, tries = 10, ok = false
         while (!ok) {
-            i = Math.floor(Math.random() * (boardSize - defaultLength))
-            j = Math.floor(Math.random() * (boardSize - defaultLength))
+            i = Math.floor(Math.random() * (size - defaultLength))
+            j = Math.floor(Math.random() * (size - defaultLength))
             ok = true
             for (var k = 0; k < defaultLength; k++)
                 if (gameBoard.board[i][j + k]) {

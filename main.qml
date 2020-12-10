@@ -10,7 +10,7 @@ Window {
     width: 1600
     height: 900
     color: "#272528"
-    title: qsTr("Snake Game")
+    title: qsTr("CyberSnake 2077")
     Material.theme: Material.Dark
 
     GridLayout {
@@ -20,7 +20,6 @@ Window {
         columns: 3
         property var gameBoardComponent
         property var gameBoard
-
         ColumnLayout {
             id: col1
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
@@ -34,7 +33,7 @@ Window {
                     gridLayout.gameBoard.destroy()
                     gridLayout.gameBoard = gridLayout.gameBoardComponent.createObject(
                                 col2)
-                    gridLayout.gameBoard.randomlyGenerateBoard()
+                    gridLayout.gameBoard.initRandomly()
                     newPlayerButton.enabled = true
                     newAiSnakeButton.enabled = true
                     runningButton.enabled = false
@@ -67,6 +66,11 @@ Window {
                         newAiSnakeButton.enabled = false
                     runningButton.enabled = true
                 }
+                onEnabledChanged: {
+                    if (gridLayout.gameBoard.aiSnakes === 2)
+                        enabled = false
+                }
+
                 Material.background: '#009688'
             }
             Button {
@@ -119,6 +123,7 @@ Window {
                     runningButton.enabled = true
                 }
                 Component.onCompleted: {
+                    // if there is no data
                     var rawData = saveGame.getRawData()
                     if (rawData === "")
                         enabled = false
@@ -213,7 +218,7 @@ Window {
             gameBoardComponent = Qt.createComponent("GameBoard.qml")
             gridLayout.gameBoard = gridLayout.gameBoardComponent.createObject(
                         col2)
-            gridLayout.gameBoard.randomlyGenerateBoard()
+            gridLayout.gameBoard.initRandomly()
         }
     }
 }
