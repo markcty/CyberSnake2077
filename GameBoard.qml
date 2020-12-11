@@ -44,6 +44,8 @@ Item {
         // profile: objectRef -> if profile is null the snake should birth randomly on the board
         //                       else birth on the board indicated by the profile
         function createSnake(autoMove, i, profile) {
+            if (internal.snakes[i])
+                return
             var scoreBoard, snakes = internal.snakes
             switch (i) {
             case 0:
@@ -309,7 +311,7 @@ Item {
                 }
         var snakes = internal.snakes
         for (i = 0; i < 4; i++) {
-            if (snakes[i]) {
+            if (snakes[i] && snakes[i].name) {
                 data.snakes[i] = {
                     "snakeBody": [],
                     "autoMove": snakes[i].autoMove

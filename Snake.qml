@@ -120,7 +120,7 @@ Item {
                     }
                 } // detect other snake
                 else if (next.name === "snake") {
-                    if (next.invinicible) {
+                    if (next.invincible) {
                         rebirth()
                         return
                     } else {
@@ -359,7 +359,6 @@ Item {
             internal.snakeBody[i].partSize = atomSize * (size + delta * i)
         }
     }
-
     function startMove() {
         inputStack = []
         moveTimer.start()
@@ -368,7 +367,6 @@ Item {
     function stopMove() {
         moveTimer.stop()
     }
-
     function rebirth() {
         // start animation
         rebirthAnimation.start()

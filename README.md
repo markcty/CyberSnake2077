@@ -41,6 +41,12 @@ The score of next move is computed as below
 - +8 if next move is food
 - +10 if next move can kill another snake
 
+## Component implementation details
+
+### main
+
+![](docImgs/main.png)
+
 
 
 
