@@ -99,7 +99,7 @@ Item {
         id: canvas
         width: 720
         height: 720
-        color: '#212121'
+        color: '#121416'
         radius: 20
         anchors.centerIn: parent
     }

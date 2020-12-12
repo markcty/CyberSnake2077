@@ -9,7 +9,7 @@ Window {
     visible: true
     width: 1600
     height: 900
-    color: "#272528"
+    color: "#0D1117"
     title: qsTr("CyberSnake 2077")
     Material.theme: Material.Dark
 
