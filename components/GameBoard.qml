@@ -140,35 +140,40 @@ Item {
     // handle all key input
     Keys.onPressed: {
         var snakes = internal.snakes
+        function push(direction, i) {
+            let l = snakes[i].inputStack.length
+            if (!l || snakes[i].inputStack[l - 1] !== direction)
+                snakes[i].inputStack.push(direction)
+        }
         if (snakes[0] && snakes[0].name) {
             switch (event.key) {
             case Qt.Key_W:
-                snakes[0].inputStack.push("up")
+                push("up", 0)
                 break
             case Qt.Key_A:
-                snakes[0].inputStack.push("left")
+                push("left", 0)
                 break
             case Qt.Key_S:
-                snakes[0].inputStack.push("down")
+                push("down", 0)
                 break
             case Qt.Key_D:
-                snakes[0].inputStack.push("right")
+                push("right", 0)
                 break
             }
         }
         if (snakes[1] && snakes[1].name) {
             switch (event.key) {
             case Qt.Key_I:
-                snakes[1].inputStack.push("up")
+                push("up", 1)
                 break
             case Qt.Key_J:
-                snakes[1].inputStack.push("left")
+                push("left", 1)
                 break
             case Qt.Key_K:
-                snakes[1].inputStack.push("down")
+                push("down", 1)
                 break
             case Qt.Key_L:
-                snakes[1].inputStack.push("right")
+                push("right", 1)
                 break
             }
         }
@@ -344,12 +349,12 @@ Item {
             }
     }
     Component.onCompleted: {
-        snakeComponent = Qt.createComponent("Snake.qml")
-        plusLifeComponent = Qt.createComponent("PlusLife.qml")
-        accelerateComponent = Qt.createComponent("Accelerate.qml")
-        foodComponent = Qt.createComponent("Food.qml")
-        brickComponent = Qt.createComponent("Brick.qml")
-        colorAllergyComponent = Qt.createComponent("ColorAllergy.qml")
+        snakeComponent = Qt.createComponent("/components/Snake.qml")
+        plusLifeComponent = Qt.createComponent("/mapItems/PlusLife.qml")
+        accelerateComponent = Qt.createComponent("/mapItems/Accelerate.qml")
+        foodComponent = Qt.createComponent("/mapItems/Food.qml")
+        brickComponent = Qt.createComponent("/mapItems/Brick.qml")
+        colorAllergyComponent = Qt.createComponent("/mapItems/ColorAllergy.qml")
         // init the board array
         var i, j
         var size = canvas.height / atomSize

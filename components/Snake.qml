@@ -125,11 +125,12 @@ Item {
                         return
                     } else {
                         next.rebirth()
-                        scoreBoard.score += 8
                     }
                     // eat the snake itself
                     if (next === snake)
                         return
+                    else
+                        scoreBoard.score += 8
                 }
             }
             // delete the tail
@@ -302,7 +303,7 @@ Item {
     }
 
     Component.onCompleted: {
-        snakeBodyComponent = Qt.createComponent("SnakeBody.qml")
+        snakeBodyComponent = Qt.createComponent("/components/SnakeBody.qml")
     }
 
     function randomlyBirth() {

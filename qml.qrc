@@ -1,20 +1,20 @@
 <RCC>
     <qresource prefix="/">
         <file>main.qml</file>
-        <file>GameBoard.qml</file>
-        <file>Snake.qml</file>
-        <file>SnakeBody.qml</file>
-        <file>PlusLife.qml</file>
-        <file>Accelerate.qml</file>
-        <file>tomato.svg</file>
-        <file>cherry.svg</file>
-        <file>watermelon.svg</file>
-        <file>apple.svg</file>
-        <file>Food.qml</file>
-        <file>Brick.qml</file>
-        <file>MapItem.qml</file>
-        <file>ColorAllergy.qml</file>
-        <file>ScoreBoard.qml</file>
         <file>font/neuropol.ttf</file>
+        <file>assets/apple.svg</file>
+        <file>assets/cherry.svg</file>
+        <file>assets/tomato.svg</file>
+        <file>assets/watermelon.svg</file>
+        <file>components/GameBoard.qml</file>
+        <file>components/ScoreBoard.qml</file>
+        <file>components/Snake.qml</file>
+        <file>components/SnakeBody.qml</file>
+        <file>mapItems/Accelerate.qml</file>
+        <file>mapItems/Brick.qml</file>
+        <file>mapItems/ColorAllergy.qml</file>
+        <file>mapItems/Food.qml</file>
+        <file>mapItems/MapItem.qml</file>
+        <file>mapItems/PlusLife.qml</file>
     </qresource>
 </RCC>

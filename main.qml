@@ -215,7 +215,7 @@ Window {
         }
 
         Component.onCompleted: {
-            gameBoardComponent = Qt.createComponent("GameBoard.qml")
+            gameBoardComponent = Qt.createComponent("/components/GameBoard.qml")
             gridLayout.gameBoard = gridLayout.gameBoardComponent.createObject(
                         col2)
             gridLayout.gameBoard.initRandomly()

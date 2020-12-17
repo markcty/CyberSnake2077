@@ -7,7 +7,7 @@ import QtGraphicalEffects 1.0
 MapItem {
     id: food
     property string name: "food"
-    property var foodNames: ["apple.svg", "cherry.svg", "tomato.svg", "watermelon.svg"]
+    property var foodNames: ["/assets/apple.svg", "/assets/cherry.svg", "/assets/tomato.svg", "/assets/watermelon.svg"]
     Image {
         id: foodImage
         width: food.atomSize * 0.8
