@@ -51,6 +51,10 @@ The score of next move is computed as below
 - +8 if next move is food
 - +10 if next move can kill another snake
 
+### How is the save game implemented?
+
+The game is saved in json. The data need to be saved is stored in an object and parsed into Json. Json is written or read into/ from the file through a c++ backend `SaveGame`.
+
 ## Component implementation details
 
 ### main
