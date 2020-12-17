@@ -3,6 +3,7 @@
 #include <QQuickStyle>
 #include <savegame.h>
 #include <QFont>
+#include <QFontDatabase>
 
 int main(int argc, char *argv[])
 {
@@ -11,8 +12,11 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
-    QFont font("Arial");
-    app.setFont(font);
+    int id = QFontDatabase::addApplicationFont(":/font/neuropol.ttf");
+    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    QFont gameFont(family);
+
+    app.setFont(gameFont);
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));

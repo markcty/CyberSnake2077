@@ -15,5 +15,6 @@
         <file>MapItem.qml</file>
         <file>ColorAllergy.qml</file>
         <file>ScoreBoard.qml</file>
+        <file>font/neuropol.ttf</file>
     </qresource>
 </RCC>
