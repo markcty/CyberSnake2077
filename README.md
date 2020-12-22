@@ -8,24 +8,31 @@ https://github.com/markcty/CyberSnake2077
 
 ## Features
 
-- Cyberpunk color scheme
-- Minimalist Design
-  - use circles to present a snake
-  - use glow effect to give players atmosphere
-  - the glow around the game board indicates the winner (cool)
+- Cyberpunk2077 color style (steal its thunder ︿(￣︶￣)︿ )
+  - Use circles to present a snake
+  - Use glow effect almost everyshere to create an impression of space
+  - The glow effect around the game board indicates the color of the winner (cool) (i.e. The glow will be yellow if the yellow snake has the highest score)
 - Fully animated
   - Almost all objects has a fade in or fade out animation
   - When moving the food to a wrong position, the food will spring back to its original position
+  - When the snake moves, the ground will shine.
 - Up to 2 players + 2 AI snakes
 - 3 different food
   - Plus Life
   - Accelerate
-  - Color Allergy: only the snake with the right color can eat it, otherwise the snake died
+  - Color Allergy: only the snake with the right color can eat it, otherwise the snake will die
 - Implement user input stack to give players a fluent control
+- Simple board edit mode: just drag and drop the food. If you want to remove the food or brick, just drop it somewhere outside the board.
 
-## Overview of codes
+## Player guide
 
-The core of the game is to maintain a two dimension array `board` which records all the objects on the game board. For example, if there is food on row 2 col 3, `board[2][3]` is a reference to that food object. If a snake spread across row 2~6 col 7, `board[2~6][7]` all refer to this snake object. When the snake moves or any food was eaten, the board is updated.
+Use `W A S D` to control snake0(blue snake), Use `I J K L` to control snake1(orange snake).
+
+Press corresponding buttons to edit the board, add a player or ai snake, add food ...
+
+## Overview of code
+
+The core of the game is to maintain a two dimension array `board` which records all the objects on the game board. For example, if there is food on row 2 col 3, `board[2][3]` is a reference to that food object. If a snake spread across row 2~6 col 7, `board[2~6][7]` all refer to this snake object. When the snake moves or any food is eaten, the board is updated.
 
 ### How do the snakes move?
 
