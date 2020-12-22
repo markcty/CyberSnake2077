@@ -4,8 +4,10 @@ import QtQuick.Controls 2.0
 import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 import QtQuick.Controls.Material 2.12
+import QtQuick.Dialogs 1.1
 
 Window {
+    id: window
     visible: true
     width: 1600
     height: 900
@@ -139,6 +141,14 @@ Window {
                 onClicked: {
                     gridLayout.gameBoard.save()
                     loadGameButton.enabled = true
+                    messageDialog.open()
+                }
+            }
+            MessageDialog {
+                id: messageDialog
+                text: "Save succeed!"
+                onAccepted: {
+                    visible = false
                 }
             }
             Button {

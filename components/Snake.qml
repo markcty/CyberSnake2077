@@ -17,11 +17,12 @@ Item {
     property color color
     property bool autoMove: false
     property bool invincible: false
+    property string direction: "right"
 
     QtObject {
         id: internal
         property var snakeBody: []
-        property string direction: "right"
+
         property int lifes: 2
         property int defaultLength: 5
         function move() {
@@ -355,6 +356,7 @@ Item {
                                                                     }))
             gameBoard.board[body.i][body.j] = snake
         })
+        direction = profile.direction
         var size = 0.3, delta = (0.8 - 0.3) / internal.snakeBody.length
         for (var i = 0; i < internal.snakeBody.length; i++) {
             internal.snakeBody[i].partSize = atomSize * (size + delta * i)
@@ -383,7 +385,7 @@ Item {
         invincible = true
         inputStack = []
         randomlyBirth()
-        internal.direction = "right"
+        direction = "right"
         moveTimer.stop()
         acclerateTimer.stop()
         moveTimer.speed = 400

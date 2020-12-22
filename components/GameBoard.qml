@@ -319,7 +319,8 @@ Item {
             if (snakes[i] && snakes[i].name) {
                 data.snakes[i] = {
                     "snakeBody": [],
-                    "autoMove": snakes[i].autoMove
+                    "autoMove": snakes[i].autoMove,
+                    "direction": snakes[i].direction
                 }
                 data.snakes[i].snakeBody = snakes[i].saveSnake()
             }
