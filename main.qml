@@ -166,6 +166,8 @@ Window {
                     addPlusLifeButton.visible = t
                     addBrickButton.visible = t
                     addColorAllergyButton.visible = t
+                    newPlayerButton.enabled = !t
+                    newAiSnakeButton.enabled = !t
                     newGameButton.enabled = !t
                     saveGameButton.visible = !t
                     loadGameButton.visible = !t
